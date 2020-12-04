@@ -38,15 +38,16 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8
     }
 
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding = true
     }
 
     applicationVariants.all { variant ->
         variant.outputs.each {
+            def projectName = rootProject.name
             def versionName = variant.versionName
             def buildType = variant.buildType.name
-            it.outputFileName = "codex--${versionName}-${buildType}.apk"
+            it.outputFileName = "${projectName}-${versionName}-${buildType}.apk"
         }
     }
 }
@@ -55,18 +56,18 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.core:core-ktx:$androidx_core_version"
     implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
-    implementation project(":codex-core")
-    implementation project(":codex-decoration:autozoom")
-    implementation project(":codex-decoration:gesture")
-    implementation project(":codex-decoration:beep")
-    implementation project(":codex-decoration:finder-ios")
-    implementation project(":codex-decoration:finder-wechat")
-    implementation project(":codex-decoration:frozen")
-    implementation project(":codex-decoration:vibrate")
-    implementation project(":codex-analyzer:luminosity")
-    implementation project(":codex-processor:zxing")
-    implementation project(":codex-processor:zbar")
-    implementation project(":codex-processor:mlkit")
-    implementation project(":codex-processor:hms")
-    // implementation project(":codex-processor:hms-plus")
+    implementation project(":core")
+    implementation project(":decoration:autozoom")
+    implementation project(":decoration:gesture")
+    implementation project(":decoration:beep")
+    implementation project(":decoration:finder-ios")
+    implementation project(":decoration:finder-wechat")
+    implementation project(":decoration:frozen")
+    implementation project(":decoration:vibrate")
+    implementation project(":analyzer:luminosity")
+    implementation project(":processor:zxing")
+    implementation project(":processor:zbar")
+    implementation project(":processor:mlkit")
+    implementation project(":processor:hms")
+    // implementation project(":processor:hms-plus")
 }

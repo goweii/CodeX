@@ -37,13 +37,17 @@ android {
     }
 
     libraryVariants.all { variant ->
-        def moduleName = project.path
-                .replaceFirst(":", "")
-                .replaceAll(":", "-")
+        def projectName = rootProject.name
+        def moduleName = project.name
+        def parentProject = project.parent
+        while (project.rootProject != parentProject) {
+            moduleName = "${parentProject.name}-${moduleName}"
+            parentProject = project.parent
+        }
         def versionName = project.version
         def buildType = variant.buildType.name
         variant.outputs.all { output ->
-            def fileName = "${moduleName}-${versionName}-${buildType}.aar"
+            def fileName = "${projectName}-${moduleName}-${versionName}-${buildType}.aar"
             output.outputFileName = fileName
         }
     }
