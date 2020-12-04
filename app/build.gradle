@@ -1,0 +1,72 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion rootProject.ext.compile_sdk_version
+    buildToolsVersion rootProject.ext.build_tools_version
+
+    defaultConfig {
+        applicationId "per.goweii.codex.android"
+        minSdkVersion rootProject.ext.min_sdk_version
+        targetSdkVersion rootProject.ext.target_sdk_version
+        versionCode rootProject.ext.project_version_code
+        versionName rootProject.ext.project_version_name
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a" , "arm64-v8a"//, "x86", "x86_64", "mips", "mips64"
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled rootProject.ext.minify_enabled
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled rootProject.ext.minify_enabled
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    viewBinding {
+        enabled = true
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each {
+            def versionName = variant.versionName
+            def buildType = variant.buildType.name
+            it.outputFileName = "codex--${versionName}-${buildType}.apk"
+        }
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "androidx.core:core-ktx:$androidx_core_version"
+    implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
+    implementation project(":codex-core")
+    implementation project(":codex-decoration:autozoom")
+    implementation project(":codex-decoration:gesture")
+    implementation project(":codex-decoration:beep")
+    implementation project(":codex-decoration:finder-ios")
+    implementation project(":codex-decoration:finder-wechat")
+    implementation project(":codex-decoration:frozen")
+    implementation project(":codex-decoration:vibrate")
+    implementation project(":codex-analyzer:luminosity")
+    implementation project(":codex-processor:zxing")
+    implementation project(":codex-processor:zbar")
+    implementation project(":codex-processor:mlkit")
+    implementation project(":codex-processor:hms")
+    // implementation project(":codex-processor:hms-plus")
+}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="IOSFinderView">
+        <attr name="finderNormalColor" format="color" />
+        <attr name="finderFoundColor" format="color" />
+        <attr name="finderCircleOuterColor" format="color" />
+        <attr name="finderCircleInnerColor" format="color" />
+        <attr name="finderInitSize" format="fraction" />
+        <attr name="finderNormalSize" format="fraction" />
+        <attr name="finderZoomSize" format="fraction" />
+        <attr name="finderStrokeWidth" format="fraction" />
+        <attr name="finderCornerRadius" format="fraction" />
+        <attr name="finderSideLength" format="fraction" />
+        <attr name="finderIsCircleRadius" format="fraction" />
+        <attr name="finderZoomDuration" format="integer" />
+        <attr name="finderSingleTransformDuration" format="integer" />
+        <attr name="finderMultiCenterDuration" format="integer" />
+    </declare-styleable>
+</resources>

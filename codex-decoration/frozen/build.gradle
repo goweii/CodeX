@@ -1,0 +1,10 @@
+apply from: "$rootDir/module.gradle"
+
+android {
+}
+
+dependencies {
+    implementation "androidx.core:core-ktx:$androidx_core_version"
+    implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
+    api project(":codex-core")
+}

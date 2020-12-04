@@ -1,0 +1,14 @@
+{
+  "client": {
+    "appType": "1",
+    "cp_id": "27115462",
+    "product_id": "736430079244697016",
+    "client_id": "492625007332033536",
+    "client_secret": "5D7ADFDEA2B0E2C63662DEA0EE81B09A9F1F3B7C6B529C9A1A30D8DE44C4BE4D",
+    "project_id": "736430079244697016",
+    "app_id": "103376545",
+    "api_key": "CgB6e3x97a0PwX6Uyu8zOveRCEaxc/eTn5t0i8R32wX7qgKxu9+Sf8kGrquxtqQkGY7c/eL3xRGzMkaCyUCRtlfV",
+    "package_name": "per.goweii.codex.android"
+  },
+  "configuration_version": "1.0"
+}

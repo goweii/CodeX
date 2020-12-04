@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="WeChatFinderView">
+        <attr name="finderScanLineColor" format="color" />
+        <attr name="finderScanLineAnimDuration" format="integer" />
+        <attr name="finderScanLineWidthPercent" format="fraction" />
+        <attr name="finderScanLineHeightPercent" format="fraction" />
+        <attr name="finderResultPointRadius" format="dimension" />
+        <attr name="finderResultPointOuterColor" format="color" />
+        <attr name="finderResultPointInnerColor" format="color" />
+    </declare-styleable>
+</resources>

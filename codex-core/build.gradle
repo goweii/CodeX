@@ -1,0 +1,18 @@
+apply from: "$rootDir/module.gradle"
+apply plugin: 'kotlin-kapt'
+
+android {
+}
+
+dependencies {
+    implementation "androidx.core:core-ktx:$androidx_core_version"
+    implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$androidx_lifecycle_version"
+    //noinspection LifecycleAnnotationProcessorWithJava8
+    kapt "androidx.lifecycle:lifecycle-compiler:$androidx_lifecycle_version"
+    //implementation "androidx.lifecycle:lifecycle-common-java8:$androidx_lifecycle_version"
+    implementation "androidx.camera:camera-core:$camerax_core_version"
+    implementation "androidx.camera:camera-camera2:$camerax_core_version"
+    implementation "androidx.camera:camera-lifecycle:$camerax_core_version"
+    implementation "androidx.camera:camera-view:$camerax_view_version"
+}

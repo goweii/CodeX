@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <per.goweii.codex.scanner.CodeScanner
+        android:id="@+id/code_scanner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <per.goweii.codex.decoration.frozen.FrozenView
+        android:id="@+id/frozen_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/finder_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="16dp"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/iv_torch"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/selector_torch_bg"
+        android:scaleType="centerInside"
+        android:src="@drawable/selector_torch_icon"
+        android:visibility="gone"
+        tools:ignore="ContentDescription" />
+
+    <FrameLayout
+        android:id="@+id/fl_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ScrollView
+            android:id="@+id/sv_result"
+            android:layout_width="match_parent"
+            android:layout_height="360dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/shape_card"
+            android:clickable="true"
+            android:focusable="true"
+            tools:ignore="UselessParent">
+
+            <TextView
+                android:id="@+id/tv_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+        </ScrollView>
+
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/shape_black"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_back"
+        tools:ignore="ContentDescription" />
+
+</RelativeLayout>
