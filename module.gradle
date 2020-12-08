@@ -42,7 +42,7 @@ android {
         def parentProject = project.parent
         while (project.rootProject != parentProject) {
             moduleName = "${parentProject.name}-${moduleName}"
-            parentProject = project.parent
+            parentProject = parentProject.parent
         }
         def versionName = project.version
         def buildType = variant.buildType.name
