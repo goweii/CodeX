@@ -5,8 +5,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import per.goweii.codex.android.databinding.ActivityMainBinding
-import per.goweii.codex.decoration.finder.ios.IOSFinderView
-import per.goweii.codex.decoration.finder.wechat.WeChatFinderView
+import per.goweii.codex.decorator.finder.ios.IOSFinderView
+import per.goweii.codex.decorator.finder.wechat.WeChatFinderView
 import per.goweii.codex.processor.hms.HmsDecodeProcessor
 import per.goweii.codex.processor.hms.HmsEncodeProcessor
 import per.goweii.codex.processor.hms.HmsScanProcessor
