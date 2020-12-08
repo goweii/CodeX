@@ -5,14 +5,13 @@ android {
 }
 
 dependencies {
-    implementation "androidx.core:core-ktx:$androidx_core_version"
-    implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$androidx_lifecycle_version"
-    //noinspection LifecycleAnnotationProcessorWithJava8
-    kapt "androidx.lifecycle:lifecycle-compiler:$androidx_lifecycle_version"
-    //implementation "androidx.lifecycle:lifecycle-common-java8:$androidx_lifecycle_version"
-    implementation "androidx.camera:camera-core:$camerax_core_version"
-    implementation "androidx.camera:camera-camera2:$camerax_core_version"
-    implementation "androidx.camera:camera-lifecycle:$camerax_core_version"
-    implementation "androidx.camera:camera-view:$camerax_view_version"
+    implementation rootProject.ext.dependencies.androidx_core_ktx
+    implementation rootProject.ext.dependencies.androidx_appcompat
+    implementation rootProject.ext.dependencies.androidx_lifecycle_runtime_ktx
+    kapt rootProject.ext.dependencies.androidx_lifecycle_compiler
+    //implementation rootProject.ext.dependencies.androidx_lifecycle_common_java8
+    implementation rootProject.ext.dependencies.androidx_camera_core
+    implementation rootProject.ext.dependencies.androidx_camera_camera2
+    implementation rootProject.ext.dependencies.androidx_camera_lifecycle
+    implementation rootProject.ext.dependencies.androidx_camera_view
 }
