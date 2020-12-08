@@ -23,7 +23,7 @@
 -keep class per.goweii.codex.CodeFormat { *; }
 -keep class per.goweii.codex.CodeResult { *; }
 -keep class per.goweii.codex.CodeProcessor { *; }
--keep class per.goweii.codex.scanner.decoration.ScanDecoration { *; }
+-keep class per.goweii.codex.scanner.decorator.ScanDecorator { *; }
 -keep class per.goweii.codex.scanner.CodeScanner { *; }
 -keep class per.goweii.codex.decoder.CodeDecoder { *; }
 -keep class per.goweii.codex.decoder.DecodeProcessor { *; }

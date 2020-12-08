@@ -8,12 +8,12 @@ import android.os.Vibrator
 import per.goweii.codex.CodeResult
 import per.goweii.codex.scanner.CameraProxy
 import per.goweii.codex.scanner.CodeScanner
-import per.goweii.codex.scanner.decoration.ScanDecoration
+import per.goweii.codex.scanner.decorator.ScanDecorator
 
-class VibrateDecoration(
+class VibrateDecorator(
     private val duration: Long = 20L,
     private val amplitude: Int = 10
-) : ScanDecoration {
+) : ScanDecorator {
     private var vibrator: Vibrator? = null
 
     override fun onCreate(scanner: CodeScanner) {

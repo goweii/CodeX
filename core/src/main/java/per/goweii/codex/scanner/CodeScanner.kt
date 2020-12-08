@@ -20,8 +20,8 @@ import per.goweii.codex.decoder.DecodeProcessor
 import per.goweii.codex.scanner.analyzer.AnalyzerChain
 import per.goweii.codex.scanner.analyzer.DecodeAnalyzer
 import per.goweii.codex.scanner.analyzer.ScanAnalyzer
-import per.goweii.codex.scanner.decoration.DecorationSet
-import per.goweii.codex.scanner.decoration.ScanDecoration
+import per.goweii.codex.scanner.decorator.DecoratorSet
+import per.goweii.codex.scanner.decorator.ScanDecorator
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.abs
@@ -31,7 +31,7 @@ import kotlin.math.min
 class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
     private val mainHandler = Handler(Looper.getMainLooper())
     private val analyzerChain = AnalyzerChain()
-    private val decorationSet = DecorationSet()
+    private val decorationSet = DecoratorSet()
     private val results = mutableListOf<CodeResult>()
 
     private val ratioMutableLiveData: MutableLiveData<Ratio> = MutableLiveData(Ratio.RATIO_16_9)
@@ -139,11 +139,11 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
         this.onFound = callback
     }
 
-    fun addDecoration(vararg decoration: ScanDecoration) {
-        decorationSet.append(*decoration)
+    fun addDecoration(vararg decorator: ScanDecorator) {
+        decorationSet.append(*decorator)
     }
 
-    fun removeDecoration(clazz: Class<out ScanDecoration>) {
+    fun removeDecoration(clazz: Class<out ScanDecorator>) {
         decorationSet.remove(clazz)
     }
 

@@ -17,9 +17,9 @@ import androidx.lifecycle.Observer
 import per.goweii.codex.CodeResult
 import per.goweii.codex.scanner.CameraProxy
 import per.goweii.codex.scanner.CodeScanner
-import per.goweii.codex.scanner.decoration.ScanDecoration
+import per.goweii.codex.scanner.decorator.ScanDecorator
 
-class WeChatFinderView : View, ScanDecoration {
+class WeChatFinderView : View, ScanDecorator {
     private var finderScanLineColor = Color.GREEN
     private var finderScanLineWidthPercent = 1F
     private var finderScanLineHeightPercent = 0.1F

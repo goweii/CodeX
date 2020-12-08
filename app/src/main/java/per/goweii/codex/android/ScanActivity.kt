@@ -20,12 +20,12 @@ import per.goweii.codex.analyzer.luminosity.LuminosityAnalyzer
 import per.goweii.codex.android.databinding.ActivitySacnBinding
 import per.goweii.codex.android.databinding.IosFinderViewBinding
 import per.goweii.codex.android.databinding.WechatFinderViewBinding
-import per.goweii.codex.decorator.autozoom.AutoZoomDecoration
-import per.goweii.codex.decorator.beep.BeepDecoration
+import per.goweii.codex.decorator.autozoom.AutoZoomDecorator
+import per.goweii.codex.decorator.beep.BeepDecorator
 import per.goweii.codex.decorator.finder.ios.IOSFinderView
 import per.goweii.codex.decorator.finder.wechat.WeChatFinderView
-import per.goweii.codex.decorator.gesture.GestureDecoration
-import per.goweii.codex.decorator.vibrate.VibrateDecoration
+import per.goweii.codex.decorator.gesture.GestureDecorator
+import per.goweii.codex.decorator.vibrate.VibrateDecorator
 import per.goweii.codex.processor.hms.HmsScanProcessor
 import per.goweii.codex.processor.mlkit.MLKitScanProcessor
 import per.goweii.codex.processor.zbar.ZBarScanProcessor
@@ -33,7 +33,7 @@ import per.goweii.codex.processor.zxing.ZXingMultiScanProcessor
 import per.goweii.codex.processor.zxing.ZXingMultiScanQRCodeProcessor
 import per.goweii.codex.processor.zxing.ZXingScanProcessor
 import per.goweii.codex.scanner.CameraProxy
-import per.goweii.codex.scanner.decoration.ScanDecoration
+import per.goweii.codex.scanner.decorator.ScanDecorator
 
 class ScanActivity : AppCompatActivity() {
     companion object {
@@ -99,11 +99,11 @@ class ScanActivity : AppCompatActivity() {
             })
             addDecoration(
                 binding.frozenView,
-                finderView as ScanDecoration,
-                BeepDecoration(),
-                VibrateDecoration(),
-                GestureDecoration(),
-                AutoZoomDecoration()
+                finderView as ScanDecorator,
+                BeepDecorator(),
+                VibrateDecorator(),
+                GestureDecorator(),
+                AutoZoomDecorator()
             )
             cameraProxyLiveData.observe(this@ScanActivity) { cameraProxy ->
                 cameraProxy?.torchState?.observe(this@ScanActivity) { torchState ->

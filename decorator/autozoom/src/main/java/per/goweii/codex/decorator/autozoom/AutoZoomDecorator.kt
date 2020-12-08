@@ -9,11 +9,11 @@ import androidx.lifecycle.Observer
 import per.goweii.codex.CodeResult
 import per.goweii.codex.scanner.CameraProxy
 import per.goweii.codex.scanner.CodeScanner
-import per.goweii.codex.scanner.decoration.ScanDecoration
+import per.goweii.codex.scanner.decorator.ScanDecorator
 
-class AutoZoomDecoration(
+class AutoZoomDecorator(
     private val zoomDelay: Long = 3000L
-) : ScanDecoration {
+) : ScanDecorator {
     private var zoomState: LiveData<ZoomState>? = null
     private var zoomObserver: Observer<ZoomState> = Observer {
         postAutoZoom()

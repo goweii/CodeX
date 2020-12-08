@@ -8,10 +8,10 @@ import android.view.ScaleGestureDetector
 import per.goweii.codex.CodeResult
 import per.goweii.codex.scanner.CameraProxy
 import per.goweii.codex.scanner.CodeScanner
-import per.goweii.codex.scanner.decoration.ScanDecoration
+import per.goweii.codex.scanner.decorator.ScanDecorator
 
 @SuppressLint("ClickableViewAccessibility")
-class GestureDecoration : ScanDecoration {
+class GestureDecorator : ScanDecorator {
     private var scanner: CodeScanner? = null
 
     override fun onCreate(scanner: CodeScanner) {

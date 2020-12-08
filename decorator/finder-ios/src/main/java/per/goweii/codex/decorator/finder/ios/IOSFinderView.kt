@@ -21,10 +21,10 @@ import per.goweii.codex.Point
 import per.goweii.codex.Quad
 import per.goweii.codex.scanner.CameraProxy
 import per.goweii.codex.scanner.CodeScanner
-import per.goweii.codex.scanner.decoration.ScanDecoration
+import per.goweii.codex.scanner.decorator.ScanDecorator
 import kotlin.math.min
 
-class IOSFinderView : View, ScanDecoration {
+class IOSFinderView : View, ScanDecorator {
     @ColorInt
     private var finderNormalColor = Color.WHITE
 

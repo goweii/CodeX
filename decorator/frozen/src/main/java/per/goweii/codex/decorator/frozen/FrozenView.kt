@@ -7,9 +7,9 @@ import androidx.appcompat.widget.AppCompatImageView
 import per.goweii.codex.CodeResult
 import per.goweii.codex.scanner.CameraProxy
 import per.goweii.codex.scanner.CodeScanner
-import per.goweii.codex.scanner.decoration.ScanDecoration
+import per.goweii.codex.scanner.decorator.ScanDecorator
 
-class FrozenView : AppCompatImageView, ScanDecoration {
+class FrozenView : AppCompatImageView, ScanDecorator {
     private var scanner: CodeScanner? = null
 
     constructor(context: Context) : this(context, null)

@@ -20,4 +20,4 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class per.goweii.codex.decorator.autozoom.AutoZoomDecoration { *; }
+-keep class per.goweii.codex.decorator.autozoom.AutoZoomDecorator { *; }

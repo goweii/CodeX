@@ -20,4 +20,4 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class per.goweii.codex.decorator.vibrate.VibrateDecoration { *; }
+-keep class per.goweii.codex.decorator.vibrate.VibrateDecorator { *; }

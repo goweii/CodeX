@@ -6,11 +6,11 @@ import android.media.SoundPool
 import per.goweii.codex.CodeResult
 import per.goweii.codex.scanner.CameraProxy
 import per.goweii.codex.scanner.CodeScanner
-import per.goweii.codex.scanner.decoration.ScanDecoration
+import per.goweii.codex.scanner.decorator.ScanDecorator
 
-class BeepDecoration(
+class BeepDecorator(
     private val volume: Float = 1.0F
-) : ScanDecoration {
+) : ScanDecorator {
     private var soundPool: SoundPool? = null
     private var soundId: Int? = null
 

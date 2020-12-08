@@ -1,4 +1,4 @@
-package per.goweii.codex.scanner.decoration
+package per.goweii.codex.scanner.decorator
 
 import android.graphics.Bitmap
 import per.goweii.codex.CodeResult
@@ -9,10 +9,10 @@ import per.goweii.codex.scanner.CodeScanner
  * @author CuiZhen
  * @date 2020/11/15
  */
-internal class DecorationSet {
-    private val decorations = arrayListOf<ScanDecoration>()
+internal class DecoratorSet {
+    private val decorations = arrayListOf<ScanDecorator>()
 
-    fun contains(clazz: Class<out ScanDecoration>): Boolean {
+    fun contains(clazz: Class<out ScanDecorator>): Boolean {
         decorations.forEach {
             if (it.javaClass.name == clazz.name) {
                 return true
@@ -21,22 +21,22 @@ internal class DecorationSet {
         return false
     }
 
-    fun appendUnique(analyzer: ScanDecoration) {
+    fun appendUnique(analyzer: ScanDecorator) {
         if (!contains(analyzer.javaClass)) {
             append(analyzer)
         }
     }
 
-    fun replace(analyzer: ScanDecoration) {
+    fun replace(analyzer: ScanDecorator) {
         remove(analyzer.javaClass)
         append(analyzer)
     }
 
-    fun append(vararg decoration: ScanDecoration) {
-        this.decorations.addAll(decoration)
+    fun append(vararg decorator: ScanDecorator) {
+        this.decorations.addAll(decorator)
     }
 
-    fun remove(clazz: Class<out ScanDecoration>) {
+    fun remove(clazz: Class<out ScanDecorator>) {
         val iterator = decorations.iterator()
         while (iterator.hasNext()) {
             if (iterator.next().javaClass.name == clazz.name) {
