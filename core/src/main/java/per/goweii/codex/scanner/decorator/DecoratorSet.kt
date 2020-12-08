@@ -10,10 +10,10 @@ import per.goweii.codex.scanner.CodeScanner
  * @date 2020/11/15
  */
 internal class DecoratorSet {
-    private val decorations = arrayListOf<ScanDecorator>()
+    private val decorators = arrayListOf<ScanDecorator>()
 
     fun contains(clazz: Class<out ScanDecorator>): Boolean {
-        decorations.forEach {
+        decorators.forEach {
             if (it.javaClass.name == clazz.name) {
                 return true
             }
@@ -33,11 +33,11 @@ internal class DecoratorSet {
     }
 
     fun append(vararg decorator: ScanDecorator) {
-        this.decorations.addAll(decorator)
+        this.decorators.addAll(decorator)
     }
 
     fun remove(clazz: Class<out ScanDecorator>) {
-        val iterator = decorations.iterator()
+        val iterator = decorators.iterator()
         while (iterator.hasNext()) {
             if (iterator.next().javaClass.name == clazz.name) {
                 iterator.remove()
@@ -46,35 +46,35 @@ internal class DecoratorSet {
     }
 
     fun clear() {
-        this.decorations.clear()
+        this.decorators.clear()
     }
 
     internal fun onCreate(scanner: CodeScanner) {
-        decorations.forEach {
+        decorators.forEach {
             it.onCreate(scanner)
         }
     }
 
     internal fun onBind(cameraProxy: CameraProxy) {
-        decorations.forEach {
+        decorators.forEach {
             it.onBind(cameraProxy)
         }
     }
 
     internal fun onFound(results: List<CodeResult>, bitmap: Bitmap?) {
-        decorations.forEach {
+        decorators.forEach {
             it.onFound(results, bitmap)
         }
     }
 
     internal fun onUnbind() {
-        decorations.forEach {
+        decorators.forEach {
             it.onUnbind()
         }
     }
 
     internal fun onDestroy() {
-        decorations.forEach {
+        decorators.forEach {
             it.onDestroy()
         }
     }

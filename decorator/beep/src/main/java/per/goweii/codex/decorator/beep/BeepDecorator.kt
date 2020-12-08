@@ -24,7 +24,7 @@ class BeepDecorator(
             .setMaxStreams(1)
             .setAudioAttributes(attributes)
             .build()
-        soundId = soundPool!!.load(scanner.context, R.raw.codex_decoration_beep, 1)
+        soundId = soundPool!!.load(scanner.context, R.raw.codex_decorator_beep, 1)
     }
 
     override fun onBind(camera: CameraProxy) {

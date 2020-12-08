@@ -97,7 +97,7 @@ class ScanActivity : AppCompatActivity() {
                     }
                 }
             })
-            addDecoration(
+            addDecorator(
                 binding.frozenView,
                 finderView as ScanDecorator,
                 BeepDecorator(),

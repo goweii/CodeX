@@ -31,7 +31,7 @@ import kotlin.math.min
 class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
     private val mainHandler = Handler(Looper.getMainLooper())
     private val analyzerChain = AnalyzerChain()
-    private val decorationSet = DecoratorSet()
+    private val decoratorSet = DecoratorSet()
     private val results = mutableListOf<CodeResult>()
 
     private val ratioMutableLiveData: MutableLiveData<Ratio> = MutableLiveData(Ratio.RATIO_16_9)
@@ -97,7 +97,7 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
         super.onAttachedToWindow()
         if (isFirstAttach) {
             isFirstAttach = false
-            decorationSet.onCreate(this)
+            decoratorSet.onCreate(this)
         }
         startScanIfReady()
     }
@@ -107,7 +107,7 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
         this.lifecycleOwner = null
         this.lifecycleObserver = null
         stopScanIfNeed()
-        decorationSet.onDestroy()
+        decoratorSet.onDestroy()
         analyzerExecutor?.shutdownNow()
         analyzerExecutor = null
     }
@@ -139,16 +139,16 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
         this.onFound = callback
     }
 
-    fun addDecoration(vararg decorator: ScanDecorator) {
-        decorationSet.append(*decorator)
+    fun addDecorator(vararg decorator: ScanDecorator) {
+        decoratorSet.append(*decorator)
     }
 
-    fun removeDecoration(clazz: Class<out ScanDecorator>) {
-        decorationSet.remove(clazz)
+    fun removeDecorator(clazz: Class<out ScanDecorator>) {
+        decoratorSet.remove(clazz)
     }
 
-    fun clearDecoration() {
-        decorationSet.clear()
+    fun clearDecorator() {
+        decoratorSet.clear()
     }
 
     fun addAnalyzer(vararg analyzer: ScanAnalyzer) {
@@ -229,7 +229,7 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
             bindCameraUseCases()?.let { camera ->
                 cameraProxy = CameraProxy(camera, previewView)
                 analyzerChain.restart()
-                decorationSet.onBind(cameraProxy!!)
+                decoratorSet.onBind(cameraProxy!!)
             }
         }
     }
@@ -302,7 +302,7 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
     private fun unbindCameraUseCases() {
         analyzerUseCase?.clearAnalyzer()
         previewUseCase?.setSurfaceProvider(null)
-        decorationSet.onUnbind()
+        decoratorSet.onUnbind()
         analyzerChain.shutdown()
         cameraProvider?.unbindAll()
         previewUseCase = null
@@ -355,7 +355,7 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
         }
         mainHandler.post {
             onFound?.invoke(resultsCopy)
-            decorationSet.onFound(resultsCopy, frozenBitmap)
+            decoratorSet.onFound(resultsCopy, frozenBitmap)
             stopScan()
         }
     }

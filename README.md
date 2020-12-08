@@ -13,7 +13,7 @@ Android一维码二维码等生成解析和扫描，具有高扩展性和自定�
   - mlkit
   - hms-scan
   - hms-scan-plus
-- 支持自定义扫码装饰（decoration）
+- 支持自定义扫码装饰（decorator）
   - 自动放大（autozoom）
   - 成功音效（beep）
   - 扫描线样式（finder）
