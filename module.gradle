@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-version = rootProject.ext.project_version_name
+apply from: "$rootDir/maven-upload.gradle"
 
 android {
     compileSdkVersion rootProject.ext.compile_sdk_version
@@ -37,17 +37,17 @@ android {
     }
 
     libraryVariants.all { variant ->
-        def projectName = rootProject.name
-        def moduleName = project.name
+        def rootProjectName = rootProject.name
+        def fullProjectName = project.name
         def parentProject = project.parent
         while (project.rootProject != parentProject) {
-            moduleName = "${parentProject.name}-${moduleName}"
+            fullProjectName = "${parentProject.name}-${fullProjectName}"
             parentProject = parentProject.parent
         }
         def versionName = project.version
         def buildType = variant.buildType.name
         variant.outputs.all { output ->
-            def fileName = "${projectName}-${moduleName}-${versionName}-${buildType}.aar"
+            def fileName = "${rootProjectName}-${fullProjectName}-${versionName}-${buildType}.aar"
             output.outputFileName = fileName
         }
     }
