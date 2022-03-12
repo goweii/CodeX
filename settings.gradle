@@ -1,5 +1,5 @@
 rootProject.name = "codex"
-include ':app'
+include ':simple'
 include ':core'
 include ':decorator:autozoom'
 include ':decorator:gesture'

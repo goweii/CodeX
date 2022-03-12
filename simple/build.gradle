@@ -70,19 +70,4 @@ dependencies {
     implementation project(":processor:mlkit")
     //implementation project(":processor:hms")
     implementation project(":processor:hms-plus")
-
-    // implementation "per.goweii.codex:core:$project_version_name"
-    // implementation "per.goweii.codex:decorator-autozoom:$project_version_name"
-    // implementation "per.goweii.codex:decorator-gesture:$project_version_name"
-    // implementation "per.goweii.codex:decorator-beep:$project_version_name"
-    // implementation "per.goweii.codex:decorator-finder-ios:$project_version_name"
-    // implementation "per.goweii.codex:decorator-finder-wechat:$project_version_name"
-    // implementation "per.goweii.codex:decorator-frozen:$project_version_name"
-    // implementation "per.goweii.codex:decorator-vibrate:$project_version_name"
-    // implementation "per.goweii.codex:analyzer-luminosity:$project_version_name"
-    // implementation "per.goweii.codex:processor-zxing:$project_version_name"
-    // implementation "per.goweii.codex:processor-zbar:$project_version_name"
-    // implementation "per.goweii.codex:processor-mlkit:$project_version_name"
-    // implementation "per.goweii.codex:processor-hms:$project_version_name"
-    // implementation "per.goweii.codex:processor-hms-plus:$project_version_name"
 }

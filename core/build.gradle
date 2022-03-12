@@ -1,5 +1,4 @@
 apply from: "$rootDir/module.gradle"
-apply plugin: 'kotlin-kapt'
 
 android {
 }

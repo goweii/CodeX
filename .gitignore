@@ -13,4 +13,4 @@
 /captures
 .externalNativeBuild
 .cxx
-/app/release/output-metadata.json
+/simple/release/output-metadata.json
