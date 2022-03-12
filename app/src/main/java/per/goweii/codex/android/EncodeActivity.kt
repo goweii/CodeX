@@ -10,7 +10,7 @@ import androidx.core.widget.doOnTextChanged
 import per.goweii.codex.CodeErrorCorrectionLevel
 import per.goweii.codex.android.databinding.ActivityEncodeBinding
 import per.goweii.codex.encoder.CodeEncoder
-import per.goweii.codex.processor.hms.HmsEncodeProcessor
+import per.goweii.codex.processor.hms.plus.HmsPlusEncodeProcessor
 import per.goweii.codex.processor.zxing.ZXingEncodeProcessor
 import per.goweii.codex.processor.zxing.ZXingEncodeQRCodeProcessor
 
@@ -59,12 +59,12 @@ class EncodeActivity : AppCompatActivity() {
             ZXingEncodeProcessor::class.java.name -> ZXingEncodeProcessor(
                 errorCorrectionLevel = correctionLevel
             )
-            HmsEncodeProcessor::class.java.name -> HmsEncodeProcessor(
-                errorCorrectionLevel = correctionLevel
-            )
-//            HmsPlusEncodeProcessor::class.java.name -> HmsPlusEncodeProcessor(
+//            HmsEncodeProcessor::class.java.name -> HmsEncodeProcessor(
 //                errorCorrectionLevel = correctionLevel
 //            )
+            HmsPlusEncodeProcessor::class.java.name -> HmsPlusEncodeProcessor(
+                errorCorrectionLevel = correctionLevel
+            )
             ZXingEncodeQRCodeProcessor::class.java.name -> ZXingEncodeQRCodeProcessor(
                 errorCorrectionLevel = correctionLevel
             )

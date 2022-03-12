@@ -7,9 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import per.goweii.codex.android.databinding.ActivityMainBinding
 import per.goweii.codex.decorator.finder.ios.IOSFinderView
 import per.goweii.codex.decorator.finder.wechat.WeChatFinderView
-import per.goweii.codex.processor.hms.HmsDecodeProcessor
-import per.goweii.codex.processor.hms.HmsEncodeProcessor
-import per.goweii.codex.processor.hms.HmsScanProcessor
+import per.goweii.codex.processor.hms.plus.HmsPlusDecodeProcessor
+import per.goweii.codex.processor.hms.plus.HmsPlusEncodeProcessor
+import per.goweii.codex.processor.hms.plus.HmsPlusScanProcessor
 import per.goweii.codex.processor.mlkit.MLKitDecodeProcessor
 import per.goweii.codex.processor.mlkit.MLKitScanProcessor
 import per.goweii.codex.processor.zbar.ZBarDecodeProcessor
@@ -31,8 +31,8 @@ class MainActivity : AppCompatActivity() {
         add(ZXingMultiScanQRCodeProcessor::class.java)
         add(ZBarScanProcessor::class.java)
         add(MLKitScanProcessor::class.java)
-        add(HmsScanProcessor::class.java)
-//        add(HmsPlusScanProcessor::class.java)
+//        add(HmsScanProcessor::class.java)
+        add(HmsPlusScanProcessor::class.java)
     }
     private var decodeProcessorIndex = 0
     private val decodeProcessorList = arrayListOf<Class<*>>().apply {
@@ -41,15 +41,15 @@ class MainActivity : AppCompatActivity() {
         add(ZXingMultiDecodeQRCodeProcessor::class.java)
         add(ZBarDecodeProcessor::class.java)
         add(MLKitDecodeProcessor::class.java)
-        add(HmsDecodeProcessor::class.java)
-//        add(HmsPlusDecodeProcessor::class.java)
+//        add(HmsDecodeProcessor::class.java)
+        add(HmsPlusDecodeProcessor::class.java)
     }
     private var encodeProcessorIndex = 0
     private val encodeProcessorList = arrayListOf<Class<*>>().apply {
         add(ZXingEncodeProcessor::class.java)
         add(ZXingEncodeQRCodeProcessor::class.java)
-        add(HmsEncodeProcessor::class.java)
-//        add(HmsPlusEncodeProcessor::class.java)
+//        add(HmsEncodeProcessor::class.java)
+        add(HmsPlusEncodeProcessor::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

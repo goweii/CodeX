@@ -8,7 +8,7 @@ import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import per.goweii.codex.android.databinding.ActivityDecodeBinding
 import per.goweii.codex.decoder.CodeDecoder
-import per.goweii.codex.processor.hms.HmsDecodeProcessor
+import per.goweii.codex.processor.hms.plus.HmsPlusDecodeProcessor
 import per.goweii.codex.processor.mlkit.MLKitDecodeProcessor
 import per.goweii.codex.processor.zbar.ZBarDecodeProcessor
 import per.goweii.codex.processor.zxing.ZXingDecodeProcessor
@@ -35,8 +35,8 @@ class DecodeActivity : AppCompatActivity() {
             ZXingMultiDecodeQRCodeProcessor::class.java.name -> ZXingMultiDecodeQRCodeProcessor()
             ZBarDecodeProcessor::class.java.name -> ZBarDecodeProcessor()
             MLKitDecodeProcessor::class.java.name -> MLKitDecodeProcessor()
-            HmsDecodeProcessor::class.java.name -> HmsDecodeProcessor()
-//            HmsPlusDecodeProcessor::class.java.name -> HmsPlusDecodeProcessor()
+//            HmsDecodeProcessor::class.java.name -> HmsDecodeProcessor()
+            HmsPlusDecodeProcessor::class.java.name -> HmsPlusDecodeProcessor()
             else -> throw IllegalArgumentException()
         }
         decoder = CodeDecoder(processor)

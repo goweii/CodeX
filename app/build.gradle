@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion rootProject.ext.compile_sdk_version
@@ -35,7 +34,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = "1.8"
     }
 
     buildFeatures {
@@ -69,7 +68,7 @@ dependencies {
     implementation project(":processor:zxing")
     implementation project(":processor:zbar")
     implementation project(":processor:mlkit")
-    implementation project(":processor:hms")
+    //implementation project(":processor:hms")
     implementation project(":processor:hms-plus")
 
     // implementation "per.goweii.codex:core:$project_version_name"

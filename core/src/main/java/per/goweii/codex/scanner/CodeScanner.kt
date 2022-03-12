@@ -50,7 +50,7 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
 
     private var onFound: ((List<CodeResult>) -> Unit)? = null
 
-    val previewView: PreviewView
+    val previewView: PreviewView = PreviewView(context)
 
     var cameraProxy: CameraProxy?
         get() = cameraProxyLiveData.value
@@ -78,7 +78,6 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
         attrs,
         defStyleAttr
     ) {
-        previewView = PreviewView(context)
         previewView.implementationMode = PreviewView.ImplementationMode.COMPATIBLE
         previewView.scaleType = PreviewView.ScaleType.FILL_CENTER
         addViewInLayout(previewView, 0, generateDefaultLayoutParams())
@@ -363,9 +362,8 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
     override fun onFailure(e: Exception) {
     }
 
-    inner class ScannerLifecycleObserver : LifecycleObserver {
-        @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-        fun onDestroy(owner: LifecycleOwner) {
+    private inner class ScannerLifecycleObserver : DefaultLifecycleObserver {
+        override fun onDestroy(owner: LifecycleOwner) {
             onDestroy()
         }
     }

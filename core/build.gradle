@@ -8,8 +8,7 @@ dependencies {
     implementation rootProject.ext.dependencies.androidx_core_ktx
     implementation rootProject.ext.dependencies.androidx_appcompat
     implementation rootProject.ext.dependencies.androidx_lifecycle_runtime_ktx
-    kapt rootProject.ext.dependencies.androidx_lifecycle_compiler
-    //implementation rootProject.ext.dependencies.androidx_lifecycle_common_java8
+    implementation rootProject.ext.dependencies.androidx_lifecycle_common_java8
     implementation rootProject.ext.dependencies.androidx_camera_core
     implementation rootProject.ext.dependencies.androidx_camera_camera2
     implementation rootProject.ext.dependencies.androidx_camera_lifecycle
