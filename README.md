@@ -2,7 +2,7 @@
 
 Android一维码二维码等生成解析和扫描，具有高扩展性和自定义性
 
-其中扫码基于CameraX，故在稳定和后期维护上有保障
+其中扫码相机控制基于CameraX
 
 以下内置实现均可按需引入：
 
@@ -27,3 +27,37 @@ Android一维码二维码等生成解析和扫描，具有高扩展性和自定�
     - 自定义处理器（processor）
   - 亮度分析（luminosity）
 
+
+# 如何接入
+
+1. 添加仓库
+
+```groovy
+maven { url 'https://jitpack.io' }
+```
+
+2. 添加依赖
+
+```groovy
+// 核心库（必须引入）
+implementation "com.github.goweii.CodeX:core:$version"
+
+// 处理器（选择一个）
+implementation "com.github.goweii.CodeX:processor-hms
+implementation "com.github.goweii.CodeX:processor-hms-plus
+implementation "com.github.goweii.CodeX:processor-mlkit
+implementation "com.github.goweii.CodeX:processor-zbar
+implementation "com.github.goweii.CodeX:processor-zxing
+
+// 装饰器（按需引入）
+implementation "com.github.goweii.CodeX:decorator-autozoom
+implementation "com.github.goweii.CodeX:decorator-beep
+implementation "com.github.goweii.CodeX:decorator-finder-ios
+implementation "com.github.goweii.CodeX:decorator-finder-wechat
+implementation "com.github.goweii.CodeX:decorator-frozen
+implementation "com.github.goweii.CodeX:decorator-gesture
+implementation "com.github.goweii.CodeX:decorator-vibrate
+
+// 分析器（按需引入）
+implementation "com.github.goweii.CodeX:analyzer-luminosity
+```
