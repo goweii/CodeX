@@ -32,13 +32,13 @@ Android一维码二维码等生成解析和扫描，具有高扩展性和自定�
 
 1. 添加仓库
 
-```groovy
+```
 maven { url 'https://jitpack.io' }
 ```
 
 2. 添加依赖
 
-```groovy
+```
 // 核心库（必须引入）
 implementation "com.github.goweii.CodeX:core:$version"
 
