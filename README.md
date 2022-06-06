@@ -43,21 +43,21 @@ maven { url 'https://jitpack.io' }
 implementation "com.github.goweii.CodeX:core:$version"
 
 // 处理器（选择一个）
-implementation "com.github.goweii.CodeX:processor-hms
-implementation "com.github.goweii.CodeX:processor-hms-plus
-implementation "com.github.goweii.CodeX:processor-mlkit
-implementation "com.github.goweii.CodeX:processor-zbar
-implementation "com.github.goweii.CodeX:processor-zxing
+implementation "com.github.goweii.CodeX:processor-hms:$version"
+implementation "com.github.goweii.CodeX:processor-hms-plus:$version"
+implementation "com.github.goweii.CodeX:processor-mlkit:$version"
+implementation "com.github.goweii.CodeX:processor-zbar:$version"
+implementation "com.github.goweii.CodeX:processor-zxing:$version"
 
 // 装饰器（按需引入）
-implementation "com.github.goweii.CodeX:decorator-autozoom
-implementation "com.github.goweii.CodeX:decorator-beep
-implementation "com.github.goweii.CodeX:decorator-finder-ios
-implementation "com.github.goweii.CodeX:decorator-finder-wechat
-implementation "com.github.goweii.CodeX:decorator-frozen
-implementation "com.github.goweii.CodeX:decorator-gesture
-implementation "com.github.goweii.CodeX:decorator-vibrate
+implementation "com.github.goweii.CodeX:decorator-autozoom:$version"
+implementation "com.github.goweii.CodeX:decorator-beep:$version"
+implementation "com.github.goweii.CodeX:decorator-finder-ios:$version"
+implementation "com.github.goweii.CodeX:decorator-finder-wechat:$version"
+implementation "com.github.goweii.CodeX:decorator-frozen:$version"
+implementation "com.github.goweii.CodeX:decorator-gesture:$version"
+implementation "com.github.goweii.CodeX:decorator-vibrate:$version"
 
 // 分析器（按需引入）
-implementation "com.github.goweii.CodeX:analyzer-luminosity
+implementation "com.github.goweii.CodeX:analyzer-luminosity:$version"
 ```
