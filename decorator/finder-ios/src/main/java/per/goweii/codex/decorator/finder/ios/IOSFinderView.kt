@@ -12,6 +12,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
 import androidx.core.animation.doOnEnd
+import androidx.core.content.res.use
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import per.goweii.codex.CodeResult
