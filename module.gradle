@@ -34,22 +34,6 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
     }
-
-    libraryVariants.all { variant ->
-        def rootProjectName = rootProject.name
-        def fullProjectName = project.name
-        def parentProject = project.parent
-        while (project.rootProject != parentProject) {
-            fullProjectName = "${parentProject.name}-${fullProjectName}"
-            parentProject = parentProject.parent
-        }
-        def versionName = project.version
-        def buildType = variant.buildType.name
-        variant.outputs.all { output ->
-            def fileName = "${rootProjectName}-${fullProjectName}-${versionName}-${buildType}.aar"
-            output.outputFileName = fileName
-        }
-    }
 }
 
 dependencies {
