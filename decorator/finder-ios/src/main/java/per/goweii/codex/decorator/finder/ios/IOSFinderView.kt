@@ -70,8 +70,8 @@ class IOSFinderView : View, ScanDecorator {
     private var previewWidth: Int = 0
     private var previewHeight: Int = 0
 
-    private lateinit var normalQuad: Quad
-    private lateinit var finderQuad: Quad
+    private var normalQuad: Quad = Quad.zero()
+    private var finderQuad: Quad = Quad.zero()
     private val finderPath = Path()
 
     private val results = mutableListOf<CodeResult>()
