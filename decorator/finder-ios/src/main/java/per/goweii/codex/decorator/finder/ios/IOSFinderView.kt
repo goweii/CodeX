@@ -12,7 +12,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
 import androidx.core.animation.doOnEnd
-import androidx.core.content.res.use
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import per.goweii.codex.CodeResult
@@ -280,10 +279,16 @@ class IOSFinderView : View, ScanDecorator {
                 (previewHeight - finderHeight) / 2F
             )
         }
-        normalQuad = quad.copy().apply { scaleByCenter(finderNormalSize, finderNormalSize) }
-        if (!this::finderQuad.isInitialized) {
-            finderQuad = quad.copy().apply { scaleByCenter(finderInitSize, finderInitSize) }
-            updateFinderPath()
+        quad.copy().apply { scaleByCenter(finderNormalSize, finderNormalSize) }.also {
+            if (normalQuad != it) {
+                normalQuad = it
+            }
+        }
+        quad.copy().apply { scaleByCenter(finderInitSize, finderInitSize) }.also {
+            if (finderQuad != it) {
+                finderQuad = it
+                updateFinderPath()
+            }
         }
     }
 
