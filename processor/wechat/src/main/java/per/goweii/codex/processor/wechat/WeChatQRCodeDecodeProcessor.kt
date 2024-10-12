@@ -11,7 +11,7 @@ import per.goweii.codex.decoder.DecodeProcessor
 import per.goweii.codex.processor.wechat.internal.WeChatQRCodeDetector
 
 class WeChatQRCodeDecodeProcessor(context: Context) : DecodeProcessor<Bitmap> {
-    private val detector by lazy { WeChatQRCodeDetector(context) }
+    private val detector = WeChatQRCodeDetector(context)
 
     override fun process(
         input: Bitmap,

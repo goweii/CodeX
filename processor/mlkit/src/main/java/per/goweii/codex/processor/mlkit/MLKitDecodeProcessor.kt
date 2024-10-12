@@ -15,7 +15,6 @@ import per.goweii.codex.processor.mlkit.internal.toCodeResult
 class MLKitDecodeProcessor(
     private val formats: Array<CodeFormat> = arrayOf(CodeFormat.QR_CODE)
 ) : DecodeProcessor<Bitmap> {
-    private val notFountException = CodeNotFoundException
     private val scanner: BarcodeScanner by lazy {
         val formats = formats.map { it.toBarcodeFormat() }
         if (formats.isEmpty()) {
@@ -38,7 +37,7 @@ class MLKitDecodeProcessor(
         onFailure: (Exception) -> Unit
     ) {
         if (input.isRecycled) {
-            onFailure.invoke(notFountException)
+            onFailure.invoke(CodeNotFoundException)
             return
         }
         scanner.process(InputImage.fromBitmap(input, 0))
@@ -51,7 +50,7 @@ class MLKitDecodeProcessor(
                     }
                 } else null
                 if (results.isNullOrEmpty()) {
-                    onFailure.invoke(notFountException)
+                    onFailure.invoke(CodeNotFoundException)
                 } else {
                     onSuccess.invoke(results)
                 }

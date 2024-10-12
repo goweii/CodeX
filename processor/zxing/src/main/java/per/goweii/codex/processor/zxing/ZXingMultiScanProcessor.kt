@@ -14,11 +14,11 @@ import per.goweii.codex.decoder.DecodeProcessor
 import per.goweii.codex.processor.zxing.internal.toBarcodeFormat
 import per.goweii.codex.processor.zxing.internal.toCodeResult
 import per.goweii.codex.scanner.ImageConverter
+import java.util.concurrent.atomic.AtomicReference
 
 class ZXingMultiScanProcessor(
     private val formats: Array<CodeFormat> = arrayOf(CodeFormat.QR_CODE)
 ) : DecodeProcessor<ImageProxy> {
-    private val notFountException = CodeNotFoundException
     private val reader by lazy {
         MultiFormatReader()
     }
@@ -29,6 +29,7 @@ class ZXingMultiScanProcessor(
         put(DecodeHintType.CHARACTER_SET, "UTF-8")
         put(DecodeHintType.POSSIBLE_FORMATS, formats.map { it.toBarcodeFormat() })
     }
+    private val reuseBuffer = AtomicReference<ByteArray?>(null)
 
     override fun process(
         input: ImageProxy,
@@ -37,7 +38,7 @@ class ZXingMultiScanProcessor(
     ) {
         val width = input.width
         val height = input.height
-        val buffer = ImageConverter.imageToYByteArray(input, null)
+        val buffer = ImageConverter.imageToYByteArray(input, reuseBuffer.get())
         val source = PlanarYUVLuminanceSource(buffer, width, height, 0, 0, width, height, false)
         val binaryBitmap = BinaryBitmap(HybridBinarizer(source))
         try {
@@ -50,11 +51,11 @@ class ZXingMultiScanProcessor(
                 }
             } else null
             if (codeResults.isNullOrEmpty()) {
-                onFailure.invoke(notFountException)
-            } else {
-                onSuccess.invoke(codeResults)
+                throw CodeNotFoundException
             }
+            onSuccess.invoke(codeResults)
         } catch (e: Exception) {
+            reuseBuffer.set(buffer)
             onFailure.invoke(e)
         } finally {
             reader.reset()

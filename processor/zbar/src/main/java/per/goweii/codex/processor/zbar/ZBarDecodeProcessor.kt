@@ -11,7 +11,6 @@ import per.goweii.codex.decoder.DecodeProcessor
 import per.goweii.codex.processor.zbar.internal.toCodeResult
 
 class ZBarDecodeProcessor : DecodeProcessor<Bitmap> {
-    private val notFountException = CodeNotFoundException
     private val imageScanner by lazy {
         ImageScanner().apply {
             enableCache(true)
@@ -41,7 +40,7 @@ class ZBarDecodeProcessor : DecodeProcessor<Bitmap> {
             }
         } else null
         if (results.isNullOrEmpty()) {
-            onFailure.invoke(notFountException)
+            onFailure.invoke(CodeNotFoundException)
         } else {
             onSuccess.invoke(results)
         }

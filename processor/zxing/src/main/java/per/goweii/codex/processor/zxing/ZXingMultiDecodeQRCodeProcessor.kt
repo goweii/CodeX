@@ -12,7 +12,6 @@ import per.goweii.codex.decoder.DecodeProcessor
 import per.goweii.codex.processor.zxing.internal.toCodeResult
 
 class ZXingMultiDecodeQRCodeProcessor : DecodeProcessor<Bitmap> {
-    private val notFountException = CodeNotFoundException
     private val reader by lazy { QRCodeMultiReader() }
     private val hints by lazy {
         mutableMapOf<DecodeHintType, Any>().apply {
@@ -41,7 +40,7 @@ class ZXingMultiDecodeQRCodeProcessor : DecodeProcessor<Bitmap> {
                 }
             } else null
             if (codeResults.isNullOrEmpty()) {
-                onFailure.invoke(notFountException)
+                onFailure.invoke(CodeNotFoundException)
             } else {
                 onSuccess.invoke(codeResults)
             }

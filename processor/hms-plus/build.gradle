@@ -2,6 +2,7 @@ apply from: "$rootDir/module.gradle"
 apply plugin: 'com.huawei.agconnect'
 
 android {
+    namespace 'per.goweii.codex.processor.hms.plus'
 }
 
 dependencies {

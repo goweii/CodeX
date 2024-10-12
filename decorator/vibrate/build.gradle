@@ -1,6 +1,7 @@
 apply from: "$rootDir/module.gradle"
 
 android {
+    namespace 'per.goweii.codex.decorator.vibrate'
 }
 
 dependencies {

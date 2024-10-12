@@ -16,7 +16,6 @@ import per.goweii.codex.processor.zxing.internal.toCodeResult
 class ZXingDecodeProcessor(
     private val formats: Array<CodeFormat> = arrayOf(CodeFormat.QR_CODE)
 ) : DecodeProcessor<Bitmap> {
-    private val notFountException = CodeNotFoundException
     private val reader by lazy {
         MultiFormatReader().apply {
             setHints(mutableMapOf<DecodeHintType, Any>().apply {
@@ -43,7 +42,7 @@ class ZXingDecodeProcessor(
                 val codeResult = result.toCodeResult()
                 onSuccess.invoke(listOf(codeResult))
             } else {
-                onFailure.invoke(notFountException)
+                onFailure.invoke(CodeNotFoundException)
             }
         } catch (e: Exception) {
             onFailure.invoke(e)

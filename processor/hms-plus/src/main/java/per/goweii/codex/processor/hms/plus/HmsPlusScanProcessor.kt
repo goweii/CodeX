@@ -16,7 +16,6 @@ import per.goweii.codex.processor.hms.plus.internal.toScanType
 class HmsPlusScanProcessor(
     private val formats: Array<CodeFormat> = arrayOf(CodeFormat.QR_CODE)
 ) : DecodeProcessor<ImageProxy> {
-    private val notFountException = CodeNotFoundException
     private val options by lazy {
         HmsScanAnalyzerOptions.Creator().apply {
             val formats = formats.map { it.toScanType() }
@@ -52,7 +51,7 @@ class HmsPlusScanProcessor(
             }
         }
         if (codeResults.isEmpty()) {
-            onFailure.invoke(notFountException)
+            onFailure.invoke(CodeNotFoundException)
         } else {
             onSuccess.invoke(codeResults)
         }
