@@ -2,6 +2,7 @@ package per.goweii.codex.android
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import per.goweii.codex.android.databinding.ActivityMainBinding
@@ -58,12 +59,30 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        AppConfig.getInstance(this).apply {
+            scanFinder?.let { value ->
+                scanFinderIndex = scanFinderList.indexOfFirst { it.name == value }
+            }
+            scanProcessor?.let { value ->
+                scanProcessorIndex = scanProcessorList.indexOfFirst { it.name == value }
+            }
+            decodeProcessor?.let { value ->
+                decodeProcessorIndex = decodeProcessorList.indexOfFirst { it.name == value }
+            }
+            encodeProcessor?.let { value ->
+                encodeProcessorIndex = encodeProcessorList.indexOfFirst { it.name == value }
+            }
+        }
+
         setScanFinder()
         setScanProcessor()
         setDecodeProcessor()
         setEncodeProcessor()
+
         binding.scanFinder.setOnClickListener {
             chooseScanFinder()
         }
@@ -91,6 +110,7 @@ class MainActivity : AppCompatActivity() {
         val items = scanFinderList.map { it.simpleName }.toTypedArray()
         AlertDialog.Builder(this)
             .setSingleChoiceItems(items, scanFinderIndex) { dialogInterface, i ->
+                AppConfig.getInstance(this).scanFinder = scanFinderList[i].name
                 scanFinderIndex = i
                 setScanFinder()
                 dialogInterface.dismiss()
@@ -103,6 +123,7 @@ class MainActivity : AppCompatActivity() {
         val items = scanProcessorList.map { it.simpleName }.toTypedArray()
         AlertDialog.Builder(this)
             .setSingleChoiceItems(items, scanProcessorIndex) { dialogInterface, i ->
+                AppConfig.getInstance(this).scanProcessor = scanProcessorList[i].name
                 scanProcessorIndex = i
                 setScanProcessor()
                 dialogInterface.dismiss()
@@ -115,6 +136,7 @@ class MainActivity : AppCompatActivity() {
         val items = decodeProcessorList.map { it.simpleName }.toTypedArray()
         AlertDialog.Builder(this)
             .setSingleChoiceItems(items, decodeProcessorIndex) { dialogInterface, i ->
+                AppConfig.getInstance(this).decodeProcessor = decodeProcessorList[i].name
                 decodeProcessorIndex = i
                 setDecodeProcessor()
                 dialogInterface.dismiss()
@@ -127,6 +149,7 @@ class MainActivity : AppCompatActivity() {
         val items = encodeProcessorList.map { it.simpleName }.toTypedArray()
         AlertDialog.Builder(this)
             .setSingleChoiceItems(items, encodeProcessorIndex) { dialogInterface, i ->
+                AppConfig.getInstance(this).encodeProcessor = encodeProcessorList[i].name
                 encodeProcessorIndex = i
                 setEncodeProcessor()
                 dialogInterface.dismiss()
