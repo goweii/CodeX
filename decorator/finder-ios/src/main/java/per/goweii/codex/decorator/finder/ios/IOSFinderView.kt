@@ -283,7 +283,7 @@ class IOSFinderView : View, ScanDecorator {
             }
         }
         quad.copy().apply { scaleByCenter(finderInitSize, finderInitSize) }.also {
-            if (finderQuad != it) {
+            if (finderQuad.isZero) {
                 finderQuad = it
                 updateFinderPath()
             }
@@ -389,7 +389,13 @@ class IOSFinderView : View, ScanDecorator {
             strokeJoin = Paint.Join.ROUND
             color = if (isFound) finderFoundColor else finderNormalColor
             style = Paint.Style.STROKE
-            strokeWidth = normalQuad.minSideLength * finderStrokeWidth
+            strokeWidth = finderQuad.maxSideLength * kotlin.run {
+                val min = finderStrokeWidth * 3F
+                val max = finderStrokeWidth
+                val f = (1F - finderQuad.maxSideLength / normalQuad.maxSideLength)
+                    .coerceAtLeast(0F)
+                (min - max) * f + max
+            }
         })
     }
 
