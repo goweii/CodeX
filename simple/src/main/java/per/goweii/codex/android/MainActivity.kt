@@ -12,6 +12,8 @@ import per.goweii.codex.processor.hms.plus.HmsPlusEncodeProcessor
 import per.goweii.codex.processor.hms.plus.HmsPlusScanProcessor
 import per.goweii.codex.processor.mlkit.MLKitDecodeProcessor
 import per.goweii.codex.processor.mlkit.MLKitScanProcessor
+import per.goweii.codex.processor.wechat.WeChatQRCodeDecodeProcessor
+import per.goweii.codex.processor.wechat.WeChatQRCodeScanProcessor
 import per.goweii.codex.processor.zbar.ZBarDecodeProcessor
 import per.goweii.codex.processor.zbar.ZBarScanProcessor
 import per.goweii.codex.processor.zxing.*
@@ -33,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         add(MLKitScanProcessor::class.java)
 //        add(HmsScanProcessor::class.java)
         add(HmsPlusScanProcessor::class.java)
+        add(WeChatQRCodeScanProcessor::class.java)
     }
     private var decodeProcessorIndex = 0
     private val decodeProcessorList = arrayListOf<Class<*>>().apply {
@@ -43,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         add(MLKitDecodeProcessor::class.java)
 //        add(HmsDecodeProcessor::class.java)
         add(HmsPlusDecodeProcessor::class.java)
+        add(WeChatQRCodeDecodeProcessor::class.java)
     }
     private var encodeProcessorIndex = 0
     private val encodeProcessorList = arrayListOf<Class<*>>().apply {

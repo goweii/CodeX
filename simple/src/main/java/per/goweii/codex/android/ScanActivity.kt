@@ -28,6 +28,7 @@ import per.goweii.codex.decorator.gesture.GestureDecorator
 import per.goweii.codex.decorator.vibrate.VibrateDecorator
 import per.goweii.codex.processor.hms.plus.HmsPlusScanProcessor
 import per.goweii.codex.processor.mlkit.MLKitScanProcessor
+import per.goweii.codex.processor.wechat.WeChatQRCodeScanProcessor
 import per.goweii.codex.processor.zbar.ZBarScanProcessor
 import per.goweii.codex.processor.zxing.ZXingMultiScanProcessor
 import per.goweii.codex.processor.zxing.ZXingMultiScanQRCodeProcessor
@@ -84,6 +85,7 @@ class ScanActivity : AppCompatActivity() {
             MLKitScanProcessor::class.java.name -> MLKitScanProcessor()
 //            HmsScanProcessor::class.java.name -> HmsScanProcessor()
             HmsPlusScanProcessor::class.java.name -> HmsPlusScanProcessor()
+            WeChatQRCodeScanProcessor::class.java.name -> WeChatQRCodeScanProcessor(application)
             else -> throw IllegalArgumentException()
         }
         binding.codeScanner.apply {

@@ -10,6 +10,7 @@ import per.goweii.codex.android.databinding.ActivityDecodeBinding
 import per.goweii.codex.decoder.CodeDecoder
 import per.goweii.codex.processor.hms.plus.HmsPlusDecodeProcessor
 import per.goweii.codex.processor.mlkit.MLKitDecodeProcessor
+import per.goweii.codex.processor.wechat.WeChatQRCodeDecodeProcessor
 import per.goweii.codex.processor.zbar.ZBarDecodeProcessor
 import per.goweii.codex.processor.zxing.ZXingDecodeProcessor
 import per.goweii.codex.processor.zxing.ZXingMultiDecodeProcessor
@@ -37,6 +38,7 @@ class DecodeActivity : AppCompatActivity() {
             MLKitDecodeProcessor::class.java.name -> MLKitDecodeProcessor()
 //            HmsDecodeProcessor::class.java.name -> HmsDecodeProcessor()
             HmsPlusDecodeProcessor::class.java.name -> HmsPlusDecodeProcessor()
+            WeChatQRCodeDecodeProcessor::class.java.name -> WeChatQRCodeDecodeProcessor(application)
             else -> throw IllegalArgumentException()
         }
         decoder = CodeDecoder(processor)

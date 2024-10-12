@@ -1,0 +1,30 @@
+apply from: "$rootDir/module.gradle"
+
+android {
+}
+
+dependencies {
+    implementation rootProject.ext.dependencies.androidx_core_ktx
+    implementation rootProject.ext.dependencies.androidx_appcompat
+    implementation rootProject.ext.dependencies.androidx_camera_core
+    api project(":core")
+
+    // OpenCV基础库（*必须）
+    implementation 'com.github.jenly1314.WeChatQRCode:opencv:2.2.0'
+
+    // OpenCV的ABI（可选），根据你的需要选择想要支持的SO库架构（至少选一个）
+    implementation 'com.github.jenly1314.WeChatQRCode:opencv-armv7a:2.2.0'
+    implementation 'com.github.jenly1314.WeChatQRCode:opencv-armv64:2.2.0'
+    implementation 'com.github.jenly1314.WeChatQRCode:opencv-x86:2.2.0'
+    implementation 'com.github.jenly1314.WeChatQRCode:opencv-x86_64:2.2.0'
+
+    // OpenCV二维码识别功能（可选）
+    // implementation 'com.github.jenly1314.WeChatQRCode:opencv-qrcode:2.2.0'
+    // OpenCV二维码扫码功能（可选）
+    // implementation 'com.github.jenly1314.WeChatQRCode:opencv-qrcode-scanning:2.2.0'
+
+    // 微信二维码识别功能（可选）
+    implementation 'com.github.jenly1314.WeChatQRCode:wechat-qrcode:2.2.0'
+    // 微信二维码扫码功能（可选）
+    // implementation 'com.github.jenly1314.WeChatQRCode:wechat-qrcode-scanning:2.2.0'
+}

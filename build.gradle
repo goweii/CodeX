@@ -19,7 +19,7 @@ buildscript {
     ext.camerax_view_version = "1.0.0-alpha19"
 
     ext.gradle_build_tools_version = "4.1.1"
-    ext.kotlin_version = "1.4.10"
+    ext.kotlin_version = "1.8.10"
     ext.huawei_agconnect_agcp_version = "1.4.1.300"
 
     repositories {

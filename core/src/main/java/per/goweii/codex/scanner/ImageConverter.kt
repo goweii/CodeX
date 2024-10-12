@@ -83,6 +83,16 @@ object ImageConverter {
         }
     }
 
+    fun jpegToBitmap(byteArray: ByteArray): Bitmap? {
+        val option = BitmapFactory.Options()
+        option.inPreferredConfig = Bitmap.Config.RGB_565
+        return try {
+            BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size, option)
+        } catch (ex: OutOfMemoryError) {
+            null
+        }
+    }
+
     fun imageToJpegByteArray(image: ImageProxy): ByteArray? {
         var data: ByteArray? = null
         if (image.format == ImageFormat.JPEG) {
@@ -106,7 +116,7 @@ object ImageConverter {
     }
 
     fun yuvImageToJpegByteArray(image: ImageProxy): ByteArray? {
-        val nv21 = yuv420888toNv21(image) ?: return null
+        val nv21 = yuv420888toNv21(image)
         val crop = if (shouldCropImage(image)) image.cropRect else null
         return nv21ToJpeg(nv21, image.width, image.height, crop)
     }
@@ -127,30 +137,54 @@ object ImageConverter {
         return out.toByteArray()
     }
 
-    fun yuv420888toNv21(image: ImageProxy): ByteArray? {
+    fun yuv420888toNv21(image: ImageProxy): ByteArray {
+        val yPlane = image.planes[0]
+        val yBuffer = yPlane.buffer
+        yBuffer.rewind()
+        val ySize = yBuffer.remaining()
+        val nv21 = ByteArray(ySize + image.width * image.height / 2)
+        yuv420888toNv21(image, nv21)
+        return nv21
+    }
+
+    fun yuv420888toNv21(image: ImageProxy, nv21: ByteArray) {
         val yPlane = image.planes[0]
         val uPlane = image.planes[1]
         val vPlane = image.planes[2]
+
         val yBuffer = yPlane.buffer
         val uBuffer = uPlane.buffer
         val vBuffer = vPlane.buffer
         yBuffer.rewind()
         uBuffer.rewind()
         vBuffer.rewind()
+
         val ySize = yBuffer.remaining()
+
         var position = 0
-        val nv21 = ByteArray(ySize + image.width * image.height / 2)
+
+        // Add the full y buffer to the array. If rowStride > 1, some padding may be skipped.
         for (row in 0 until image.height) {
             yBuffer[nv21, position, image.width]
             position += image.width
-            yBuffer.position(min(ySize, yBuffer.position() - image.width + yPlane.rowStride))
+            yBuffer.position(
+                min(
+                    ySize.toDouble(),
+                    (yBuffer.position() - image.width + yPlane.rowStride).toDouble()
+                )
+                    .toInt()
+            )
         }
+
         val chromaHeight = image.height / 2
         val chromaWidth = image.width / 2
         val vRowStride = vPlane.rowStride
         val uRowStride = uPlane.rowStride
         val vPixelStride = vPlane.pixelStride
         val uPixelStride = uPlane.pixelStride
+
+        // Interleave the u and v frames, filling up the rest of the buffer. Use two line buffers to
+        // perform faster bulk gets from the byte buffers.
         val vLineBuffer = ByteArray(vRowStride)
         val uLineBuffer = ByteArray(uRowStride)
         for (row in 0 until chromaHeight) {
@@ -165,7 +199,6 @@ object ImageConverter {
                 uLineBufferPosition += uPixelStride
             }
         }
-        return nv21
     }
 
     fun cropByteArray(data: ByteArray, cropRect: Rect?): ByteArray? {

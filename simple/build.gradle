@@ -13,7 +13,7 @@ android {
         versionName rootProject.ext.project_version_name
 
         ndk {
-            abiFilters "armeabi", "armeabi-v7a" , "arm64-v8a"//, "x86", "x86_64", "mips", "mips64"
+            abiFilters /*"armeabi", "armeabi-v7a" , */"arm64-v8a"/*, "x86", "x86_64", "mips", "mips64"*/
         }
     }
 
@@ -29,12 +29,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_11
     }
 
     buildFeatures {
@@ -70,4 +70,5 @@ dependencies {
     implementation project(":processor:mlkit")
     //implementation project(":processor:hms")
     implementation project(":processor:hms-plus")
+    implementation project(":processor:wechat")
 }

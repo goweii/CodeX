@@ -1,6 +1,9 @@
 rootProject.name = "codex"
+
 include ':simple'
+
 include ':core'
+
 include ':decorator:autozoom'
 include ':decorator:gesture'
 include ':decorator:beep'
@@ -8,9 +11,12 @@ include ':decorator:finder-ios'
 include ':decorator:finder-wechat'
 include ':decorator:frozen'
 include ':decorator:vibrate'
+
 include ':processor:zxing'
 include ':processor:mlkit'
 include ':processor:zbar'
 include ':processor:hms'
 include ':processor:hms-plus'
+include ':processor:wechat'
+
 include ':analyzer:luminosity'
