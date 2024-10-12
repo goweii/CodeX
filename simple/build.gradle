@@ -55,6 +55,7 @@ dependencies {
     implementation rootProject.ext.dependencies.kotlin_stdlib
     implementation rootProject.ext.dependencies.androidx_core_ktx
     implementation rootProject.ext.dependencies.androidx_appcompat
+    implementation rootProject.ext.dependencies.androidx_activity
 
     implementation project(":core")
     implementation project(":decorator:autozoom")

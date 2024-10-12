@@ -1,6 +1,7 @@
 package per.goweii.codex.scanner
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Handler
@@ -10,11 +11,24 @@ import android.util.DisplayMetrics
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.annotation.RequiresPermission
-import androidx.camera.core.*
+import androidx.camera.core.AspectRatio
+import androidx.camera.core.Camera
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageProxy
+import androidx.camera.core.Preview
+import androidx.camera.core.resolutionselector.AspectRatioStrategy
+import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.*
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import per.goweii.codex.CodeResult
 import per.goweii.codex.decoder.DecodeProcessor
 import per.goweii.codex.scanner.analyzer.AnalyzerChain
@@ -99,6 +113,11 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
             decoratorSet.onCreate(this)
         }
         startScanIfReady()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        stopScanIfNeed()
     }
 
     private fun onDestroy() {
@@ -197,8 +216,8 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
         previewView.previewStreamState.observe(
             lifecycleOwner,
             object : Observer<PreviewView.StreamState> {
-                override fun onChanged(state: PreviewView.StreamState) {
-                    if (state == PreviewView.StreamState.STREAMING) {
+                override fun onChanged(value: PreviewView.StreamState) {
+                    if (value == PreviewView.StreamState.STREAMING) {
                         previewView.previewStreamState.removeObserver(this)
                         block.invoke()
                     }
@@ -255,8 +274,16 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
         }
         updateRatioByDisplayMetrics()
         val rotation = previewView.display.rotation
+        val aspectRatioStrategy = AspectRatioStrategy(
+            ratio.aspectRatio,
+            AspectRatioStrategy.FALLBACK_RULE_AUTO
+        )
         previewUseCase = Preview.Builder()
-            .setTargetAspectRatio(ratio.aspectRatio)
+            .setResolutionSelector(
+                ResolutionSelector.Builder()
+                    .setAspectRatioStrategy(aspectRatioStrategy)
+                    .build()
+            )
             .setTargetRotation(rotation)
             .build()
             .apply {
@@ -264,7 +291,11 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
             }
         analyzerUseCase = ImageAnalysis.Builder()
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-            .setTargetAspectRatio(ratio.aspectRatio)
+            .setResolutionSelector(
+                ResolutionSelector.Builder()
+                    .setAspectRatioStrategy(aspectRatioStrategy)
+                    .build()
+            )
             .setTargetRotation(rotation)
             .build()
             .apply {
@@ -363,7 +394,17 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
     }
 
     private inner class ScannerLifecycleObserver : DefaultLifecycleObserver {
+        override fun onPause(owner: LifecycleOwner) {
+            super.onPause(owner)
+            if (owner is Activity) {
+                if (owner.isFinishing) {
+                    onDestroy()
+                }
+            }
+        }
+
         override fun onDestroy(owner: LifecycleOwner) {
+            super.onDestroy(owner)
             onDestroy()
         }
     }

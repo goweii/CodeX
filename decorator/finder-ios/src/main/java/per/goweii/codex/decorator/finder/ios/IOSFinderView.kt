@@ -6,13 +6,13 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewTreeObserver
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
 import androidx.core.animation.doOnEnd
 import androidx.core.content.res.use
+import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import per.goweii.codex.CodeResult
@@ -92,6 +92,8 @@ class IOSFinderView : View, ScanDecorator {
     private var singleTransformAnim: ValueAnimator? = null
     private var multiCenterAnim: ValueAnimator? = null
     private var zoomAnim: ValueAnimator? = null
+
+    private var scanner: CodeScanner? = null
 
     private var ratioLiveData: LiveData<CodeScanner.Ratio>? = null
     private val ratioObserver: Observer<CodeScanner.Ratio> = Observer {
@@ -173,6 +175,7 @@ class IOSFinderView : View, ScanDecorator {
     }
 
     override fun onCreate(scanner: CodeScanner) {
+        this.scanner = scanner
         ratioLiveData = scanner.ratioLiveData
         scanner.ratioLiveData.observeForever(ratioObserver)
     }
@@ -180,7 +183,8 @@ class IOSFinderView : View, ScanDecorator {
     override fun onBind(camera: CameraProxy) {
         results.clear()
         cancelAllAnim()
-        doOnPreDraw {
+
+        val startAnimTask = {
             val from = if (finderQuad.isZero) {
                 normalQuad.copy().apply {
                     scaleByCenter(
@@ -200,18 +204,10 @@ class IOSFinderView : View, ScanDecorator {
             }
             singleTransformAnim?.start()
         }
-    }
 
-    private fun doOnPreDraw(action: () -> Unit) {
-        viewTreeObserver?.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-            override fun onPreDraw(): Boolean {
-                if (viewTreeObserver?.isAlive == true) {
-                    viewTreeObserver?.removeOnPreDrawListener(this)
-                }
-                action.invoke()
-                return true
-            }
-        })
+        scanner?.doOnStreaming {
+            doOnPreDraw { startAnimTask() }
+        } ?: doOnPreDraw { startAnimTask() }
     }
 
     override fun onFound(results: List<CodeResult>, bitmap: Bitmap?) {
@@ -235,6 +231,7 @@ class IOSFinderView : View, ScanDecorator {
     }
 
     override fun onDestroy() {
+        scanner = null
         ratioLiveData?.removeObserver(ratioObserver)
         ratioLiveData = null
         cancelAllAnim()
