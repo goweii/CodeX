@@ -15,11 +15,8 @@ import android.provider.Settings
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.animation.doOnCancel
 import androidx.core.animation.doOnEnd
 import androidx.core.app.ActivityCompat
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
 import per.goweii.codex.CodeResult
 import per.goweii.codex.MultiCodeResult
 import per.goweii.codex.analyzer.luminosity.LuminosityAnalyzer
@@ -40,7 +37,6 @@ import per.goweii.codex.processor.zxing.ZXingMultiScanProcessor
 import per.goweii.codex.processor.zxing.ZXingMultiScanQRCodeProcessor
 import per.goweii.codex.processor.zxing.ZXingScanProcessor
 import per.goweii.codex.scanner.CameraProxy
-import per.goweii.codex.scanner.CodeScanner
 import per.goweii.codex.scanner.decorator.ScanDecorator
 
 class ScanActivity : AppCompatActivity() {
