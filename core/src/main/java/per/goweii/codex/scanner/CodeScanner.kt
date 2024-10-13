@@ -59,7 +59,7 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
     private var lifecycleOwner: LifecycleOwner? = null
     private var lifecycleObserver: LifecycleObserver? = null
 
-    private var continuousScan = true
+    private var continuousScan = false
 
     private var isFirstAttach = true
     private var isPermissionGranted = false
@@ -150,6 +150,10 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
 
     fun stopScan() {
         stopScanIfNeed()
+    }
+
+    fun continuousScan(enable: Boolean) {
+        continuousScan = enable
     }
 
     fun enableTorch(enable: Boolean) {

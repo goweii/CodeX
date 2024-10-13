@@ -138,7 +138,6 @@ class WeChatFinderView : View, ScanDecorator {
     }
 
     override fun onUnbind() {
-        result = MultiCodeResult.empty
     }
 
     override fun onDestroy() {

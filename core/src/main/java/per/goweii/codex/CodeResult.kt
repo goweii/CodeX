@@ -115,7 +115,7 @@ data class CodeResult(
     }
 
     override fun toString(): String {
-        return "format=$format\ntext=$text\ncenter=$center"
+        return "format: $format\ntext: $text\ncenter: $center"
     }
 
     override fun equals(other: Any?): Boolean {

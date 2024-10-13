@@ -22,6 +22,7 @@ import per.goweii.codex.processor.zxing.*
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
+    private var continuousScan = false
     private var scanFinderIndex = 0
     private val scanFinderList = arrayListOf<Class<*>>().apply {
         add(IOSFinderView::class.java)
@@ -64,6 +65,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         AppConfig.getInstance(this).apply {
+            continuousScan.let {
+                this@MainActivity.continuousScan = it
+            }
             scanFinder?.let { value ->
                 scanFinderIndex = scanFinderList.indexOfFirst { it.name == value }
             }
@@ -78,11 +82,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        binding.continuousScan.isChecked = continuousScan
         setScanFinder()
         setScanProcessor()
         setDecodeProcessor()
         setEncodeProcessor()
 
+        binding.continuousScan.setOnCheckedChangeListener { buttonView, isChecked ->
+            continuousScan = isChecked
+            AppConfig.getInstance(this).continuousScan = isChecked
+        }
         binding.scanFinder.setOnClickListener {
             chooseScanFinder()
         }
@@ -176,6 +185,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun startScan() {
         startActivity(Intent(this, ScanActivity::class.java).apply {
+            putExtra(ScanActivity.PARAMS_CONTINUOUS_SCAN, continuousScan)
             putExtra(ScanActivity.PARAMS_PROCESSOR_NAME, scanProcessorList[scanProcessorIndex].name)
             putExtra(ScanActivity.PARAMS_FINDER_VIEW, scanFinderList[scanFinderIndex].name)
         })

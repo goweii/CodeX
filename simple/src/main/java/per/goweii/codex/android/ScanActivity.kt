@@ -40,10 +40,12 @@ import per.goweii.codex.processor.zxing.ZXingMultiScanProcessor
 import per.goweii.codex.processor.zxing.ZXingMultiScanQRCodeProcessor
 import per.goweii.codex.processor.zxing.ZXingScanProcessor
 import per.goweii.codex.scanner.CameraProxy
+import per.goweii.codex.scanner.CodeScanner
 import per.goweii.codex.scanner.decorator.ScanDecorator
 
 class ScanActivity : AppCompatActivity() {
     companion object {
+        const val PARAMS_CONTINUOUS_SCAN = "continuous_scan"
         const val PARAMS_PROCESSOR_NAME = "processor_name"
         const val PARAMS_FINDER_VIEW = "finder_view"
         private const val REQ_CAMERA = 1001
@@ -70,6 +72,7 @@ class ScanActivity : AppCompatActivity() {
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         }
+        val continuousScan = intent.getBooleanExtra(PARAMS_CONTINUOUS_SCAN, false)
         finderView = when (intent.getStringExtra(PARAMS_FINDER_VIEW)) {
             IOSFinderView::class.java.name -> {
                 IosFinderViewBinding.inflate(layoutInflater).finderView
@@ -99,6 +102,7 @@ class ScanActivity : AppCompatActivity() {
             else -> throw IllegalArgumentException()
         }
         binding.codeScanner.apply {
+            continuousScan(continuousScan)
             addProcessor(processor)
             addAnalyzer(LuminosityAnalyzer {
                 if (it < 40.0) {
@@ -175,14 +179,14 @@ class ScanActivity : AppCompatActivity() {
         val foundTime = System.currentTimeMillis()
         this.startTime = foundTime
 
-        var centerY = 0F
         val sb = StringBuilder()
         sb.append("扫码用时:${foundTime - startTime}ms")
         results.forEach {
+            sb.append("\n\n")
+            sb.append(it.format)
+            sb.append(it.center)
             sb.append("\n")
-            sb.append("\n")
-            sb.append(it.toString())
-            centerY += it.center.y
+            sb.append(it.text)
         }
         binding.tvResult.text = sb.toString()
 
@@ -190,7 +194,7 @@ class ScanActivity : AppCompatActivity() {
             return
         }
 
-        centerY /= results.size.toFloat()
+        var centerY = result.results.sumOf { it.center.y.toDouble() }.toFloat() / results.size
         centerY *= binding.frozenView.height
         binding.flResult.visibility = View.INVISIBLE
         binding.flResult.post {

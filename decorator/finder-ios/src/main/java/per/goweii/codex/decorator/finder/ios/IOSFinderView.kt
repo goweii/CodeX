@@ -142,7 +142,6 @@ class IOSFinderView @JvmOverloads constructor(
     }
 
     override fun onUnbind() {
-        result = MultiCodeResult.empty
     }
 
     override fun onDestroy() {
