@@ -59,10 +59,13 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
     private var lifecycleOwner: LifecycleOwner? = null
     private var lifecycleObserver: LifecycleObserver? = null
 
+    private var continuousScan = true
+
     private var isFirstAttach = true
     private var isPermissionGranted = false
 
-    private var onFound: ((List<CodeResult>) -> Unit)? = null
+    private var onFound: ((List<CodeResult>, Bitmap?) -> Unit)? = null
+    private var onException: ((Throwable) -> Unit)? = null
 
     val previewView: PreviewView = PreviewView(context)
 
@@ -153,8 +156,12 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
         cameraProxy?.enableTorch(enable)
     }
 
-    fun onFound(callback: (List<CodeResult>) -> Unit) {
+    fun onFound(callback: (List<CodeResult>, Bitmap?) -> Unit) {
         this.onFound = callback
+    }
+
+    fun onException(callback: (Throwable) -> Unit) {
+        this.onException = callback
     }
 
     fun addDecorator(vararg decorator: ScanDecorator) {
@@ -372,25 +379,42 @@ class CodeScanner : FrameLayout, DecodeAnalyzer.Callback {
         })
     }
 
-    override fun onSuccess(results: List<CodeResult>, bitmap: Bitmap?) {
+    override fun onSuccess(results: List<CodeResult>, image: ImageProxy) {
         results.forEach { it.rotate90(1F, 1F) }
         this.results.clear()
         this.results.addAll(results)
+
         var frozenBitmap: Bitmap? = null
-        if (bitmap != null) {
-            frozenBitmap = ImageConverter.bitmapRotation90(bitmap)
+
+        if (!continuousScan) {
+            val bitmap = ImageConverter.imageToBitmap(image)
+            if (bitmap != null) {
+                frozenBitmap = ImageConverter.bitmapRotation90(bitmap)
+            }
+            if (frozenBitmap == null) {
+                frozenBitmap = previewView.bitmap
+            }
+
+            if (!analyzerChain.isShutdown()) {
+                analyzerChain.shutdown()
+            }
         }
-        if (frozenBitmap == null) {
-            frozenBitmap = previewView.bitmap
-        }
+
         mainHandler.post {
-            onFound?.invoke(resultsCopy)
-            decoratorSet.onFound(resultsCopy, frozenBitmap)
-            stopScan()
+            decoratorSet.onFindSuccess(resultsCopy, frozenBitmap)
+            onFound?.invoke(resultsCopy, frozenBitmap)
+
+            if (analyzerChain.isShutdown()) {
+                stopScan()
+            }
         }
     }
 
-    override fun onFailure(e: Exception) {
+    override fun onFailure(e: Throwable) {
+        mainHandler.post {
+            decoratorSet.onFindFailure(e)
+            onException?.invoke(e)
+        }
     }
 
     private inner class ScannerLifecycleObserver : DefaultLifecycleObserver {

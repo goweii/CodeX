@@ -31,7 +31,7 @@ class ZXingScanProcessor(
     override fun process(
         input: ImageProxy,
         onSuccess: (List<CodeResult>) -> Unit,
-        onFailure: (Exception) -> Unit
+        onFailure: (Throwable) -> Unit
     ) {
         val width = input.width
         val height = input.height
@@ -45,7 +45,7 @@ class ZXingScanProcessor(
             }
             val codeResult = result.toCodeResult()
             onSuccess.invoke(listOf(codeResult))
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             reuseBuffer.set(buffer)
             onFailure.invoke(e)
         } finally {

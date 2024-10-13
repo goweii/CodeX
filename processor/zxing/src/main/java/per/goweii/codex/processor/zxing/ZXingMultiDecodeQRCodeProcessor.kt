@@ -22,7 +22,7 @@ class ZXingMultiDecodeQRCodeProcessor : DecodeProcessor<Bitmap> {
     override fun process(
         input: Bitmap,
         onSuccess: (List<CodeResult>) -> Unit,
-        onFailure: (Exception) -> Unit
+        onFailure: (Throwable) -> Unit
     ) {
         val width = input.width
         val height = input.height
@@ -44,7 +44,7 @@ class ZXingMultiDecodeQRCodeProcessor : DecodeProcessor<Bitmap> {
             } else {
                 onSuccess.invoke(codeResults)
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             onFailure.invoke(e)
         } finally {
             reader.reset()

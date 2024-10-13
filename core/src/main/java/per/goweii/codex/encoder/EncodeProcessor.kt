@@ -7,6 +7,6 @@ interface EncodeProcessor : CodeProcessor<String, Bitmap> {
     override fun process(
         input: String,
         onSuccess: (Bitmap) -> Unit,
-        onFailure: (Exception) -> Unit
+        onFailure: (Throwable) -> Unit
     )
 }

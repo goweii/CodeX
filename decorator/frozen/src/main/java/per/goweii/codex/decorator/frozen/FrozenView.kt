@@ -36,8 +36,11 @@ class FrozenView : AppCompatImageView, ScanDecorator {
         } ?: setImageBitmap(null)
     }
 
-    override fun onFound(results: List<CodeResult>, bitmap: Bitmap?) {
+    override fun onFindSuccess(results: List<CodeResult>, bitmap: Bitmap?) {
         setImageBitmap(bitmap)
+    }
+
+    override fun onFindFailure(e: Throwable) {
     }
 
     override fun onUnbind() {

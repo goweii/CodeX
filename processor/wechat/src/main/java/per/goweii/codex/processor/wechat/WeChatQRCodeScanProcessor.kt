@@ -21,7 +21,7 @@ class WeChatQRCodeScanProcessor(context: Context) : DecodeProcessor<ImageProxy> 
     override fun process(
         input: ImageProxy,
         onSuccess: (List<CodeResult>) -> Unit,
-        onFailure: (Exception) -> Unit
+        onFailure: (Throwable) -> Unit
     ) {
         val nv21 = ImageConverter.yuv420888toNv21(input, reuseBuffer.get())
 
@@ -58,7 +58,7 @@ class WeChatQRCodeScanProcessor(context: Context) : DecodeProcessor<ImageProxy> 
             }
 
             onSuccess.invoke(codeResults)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             reuseBuffer.set(nv21)
             onFailure.invoke(e)
         }

@@ -8,7 +8,8 @@ import per.goweii.codex.scanner.CodeScanner
 interface ScanDecorator {
     fun onCreate(scanner: CodeScanner)
     fun onBind(camera: CameraProxy)
-    fun onFound(results: List<CodeResult>, bitmap: Bitmap?)
+    fun onFindSuccess(results: List<CodeResult>, bitmap: Bitmap?)
+    fun onFindFailure(e: Throwable)
     fun onUnbind()
     fun onDestroy()
 }

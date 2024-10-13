@@ -1,10 +1,8 @@
 package per.goweii.codex.scanner.analyzer
 
-import android.graphics.Bitmap
 import androidx.camera.core.ImageProxy
 import per.goweii.codex.CodeResult
 import per.goweii.codex.decoder.DecodeProcessor
-import per.goweii.codex.scanner.ImageConverter
 
 class DecodeAnalyzer(
     val processor: DecodeProcessor<ImageProxy>,
@@ -14,17 +12,13 @@ class DecodeAnalyzer(
         processor.process(
             image,
             onSuccess = { results ->
-                if (!chain.isShutdown()) {
-                    chain.shutdown()
-                    results.forEach {
-                        it.mapToPercent(
-                            image.width.toFloat(),
-                            image.height.toFloat()
-                        )
-                    }
-                    val bitmap = ImageConverter.imageToBitmap(image)
-                    callback.onSuccess(results, bitmap)
+                results.forEach {
+                    it.mapToPercent(
+                        image.width.toFloat(),
+                        image.height.toFloat()
+                    )
                 }
+                callback.onSuccess(results, image)
                 chain.next(image)
             },
             onFailure = { e ->
@@ -35,7 +29,7 @@ class DecodeAnalyzer(
     }
 
     interface Callback {
-        fun onSuccess(results: List<CodeResult>, bitmap: Bitmap?)
-        fun onFailure(e: Exception)
+        fun onSuccess(results: List<CodeResult>, image: ImageProxy)
+        fun onFailure(e: Throwable)
     }
 }

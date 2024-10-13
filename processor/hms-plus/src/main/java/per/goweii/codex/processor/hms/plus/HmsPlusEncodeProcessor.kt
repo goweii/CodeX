@@ -28,12 +28,12 @@ class HmsPlusEncodeProcessor(
     override fun process(
         input: String,
         onSuccess: (Bitmap) -> Unit,
-        onFailure: (Exception) -> Unit
+        onFailure: (Throwable) -> Unit
     ) {
         try {
             val bitmap = ScanUtil.buildBitmap(input, format.toScanType(), width, height, options)
             onSuccess.invoke(bitmap)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             onFailure.invoke(e)
         }
     }

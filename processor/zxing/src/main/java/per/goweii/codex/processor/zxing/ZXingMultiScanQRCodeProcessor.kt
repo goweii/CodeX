@@ -25,7 +25,7 @@ class ZXingMultiScanQRCodeProcessor : DecodeProcessor<ImageProxy> {
     override fun process(
         input: ImageProxy,
         onSuccess: (List<CodeResult>) -> Unit,
-        onFailure: (Exception) -> Unit
+        onFailure: (Throwable) -> Unit
     ) {
         val width = input.width
         val height = input.height
@@ -45,7 +45,7 @@ class ZXingMultiScanQRCodeProcessor : DecodeProcessor<ImageProxy> {
                 throw CodeNotFoundException
             }
             onSuccess.invoke(codeResults)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             reuseBuffer.set(buffer)
             onFailure.invoke(e)
         } finally {

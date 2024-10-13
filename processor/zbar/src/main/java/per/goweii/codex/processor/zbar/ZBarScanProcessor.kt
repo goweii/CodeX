@@ -24,7 +24,7 @@ class ZBarScanProcessor : DecodeProcessor<ImageProxy> {
     override fun process(
         input: ImageProxy,
         onSuccess: (List<CodeResult>) -> Unit,
-        onFailure: (Exception) -> Unit
+        onFailure: (Throwable) -> Unit
     ) {
         val width = input.width
         val height = input.height

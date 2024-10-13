@@ -8,7 +8,7 @@ class CodeEncoder(
     fun encode(
         text: String,
         onSuccess: (Bitmap) -> Unit,
-        onFailure: (Exception) -> Unit
+        onFailure: (Throwable) -> Unit
     ) {
         processor.process(text, onSuccess, onFailure)
     }

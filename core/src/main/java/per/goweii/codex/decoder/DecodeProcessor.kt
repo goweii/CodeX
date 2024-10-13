@@ -7,6 +7,6 @@ interface DecodeProcessor<Input> : CodeProcessor<Input, List<CodeResult>> {
     override fun process(
         input: Input,
         onSuccess: (List<CodeResult>) -> Unit,
-        onFailure: (Exception) -> Unit
+        onFailure: (Throwable) -> Unit
     )
 }

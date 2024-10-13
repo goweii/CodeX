@@ -23,7 +23,7 @@ class ZBarDecodeProcessor : DecodeProcessor<Bitmap> {
     override fun process(
         input: Bitmap,
         onSuccess: (List<CodeResult>) -> Unit,
-        onFailure: (Exception) -> Unit
+        onFailure: (Throwable) -> Unit
     ) {
         val width = input.width
         val height = input.height

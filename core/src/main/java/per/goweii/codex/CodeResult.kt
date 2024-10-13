@@ -1,5 +1,36 @@
 package per.goweii.codex
 
+class MultiCodeResult(
+    results: List<CodeResult>,
+) {
+    val results: List<CodeResult> = results
+        .sortedWith(
+            compareBy<CodeResult> { it.format }
+                .thenBy { it.text }
+        )
+
+    val size: Int get() = results.size
+
+    val isEmpty: Boolean get() = size == 0
+
+    val isNotEmpty: Boolean get() = size > 0
+
+    fun sameTo(other: MultiCodeResult): Boolean {
+        if (size != other.size) return false
+        val size = size
+        for (i in 0 until size) {
+            if (!results[i].sameTo(other.results[i])) {
+                return false
+            }
+        }
+        return true
+    }
+
+    companion object {
+        val empty = MultiCodeResult(emptyList())
+    }
+}
+
 data class CodeResult(
     val format: CodeFormat,
     val text: String,
@@ -75,6 +106,12 @@ data class CodeResult(
         rotate90(w, h)
         rotate90(w, h)
         rotate90(w, h)
+    }
+
+    fun sameTo(other: CodeResult): Boolean {
+        if (format != other.format) return false
+        if (text != other.text) return false
+        return true
     }
 
     override fun toString(): String {

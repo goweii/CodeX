@@ -7,87 +7,41 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
-import androidx.annotation.ColorInt
-import androidx.annotation.FloatRange
-import androidx.annotation.IntRange
 import androidx.core.animation.doOnEnd
-import androidx.core.content.res.use
+import androidx.core.view.doOnLayout
 import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import per.goweii.codex.CodeResult
+import per.goweii.codex.MultiCodeResult
 import per.goweii.codex.PerspectiveTransform
 import per.goweii.codex.Point
 import per.goweii.codex.Quad
 import per.goweii.codex.scanner.CameraProxy
 import per.goweii.codex.scanner.CodeScanner
 import per.goweii.codex.scanner.decorator.ScanDecorator
+import kotlin.math.max
 import kotlin.math.min
 
-class IOSFinderView : View, ScanDecorator {
-    @ColorInt
-    private var finderNormalColor = Color.WHITE
+class IOSFinderView @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr), ScanDecorator {
+    private val normalConfig = IOSFinderConfig.fromAttr(context, attrs, defStyleAttr)
+    private var normalQuad = Quad.zero()
 
-    @ColorInt
-    private var finderFoundColor = Color.GREEN
-
-    @ColorInt
-    private var finderCircleOuterColor = Color.WHITE
-
-    @ColorInt
-    private var finderCircleInnerColor = Color.GREEN
-
-    @FloatRange(from = 0.0, to = 1.0)
-    private var finderInitSize = 0.8F
-
-    @FloatRange(from = 0.0, to = 1.0)
-    private var finderNormalSize = 0.6F
-
-    @FloatRange(from = 0.0, to = 1.0)
-    private var finderZoomSize = 0.7F
-
-    @FloatRange(from = 0.0, to = 0.5)
-    private var finderStrokeWidth = 0.03F
-
-    @FloatRange(from = 0.0, to = 0.5)
-    private var finderCornerRadius = 0.14F
-
-    @FloatRange(from = 0.0, to = 0.5)
-    private var finderSideLength = 0.02F
-
-    @FloatRange(from = 0.0, to = 0.5)
-    private var finderIsCircleRadius = 0.0618F
-
-    @IntRange(from = 0)
-    private var finderZoomDuration = 1000
-
-    @IntRange(from = 0)
-    private var finderSingleTransformDuration = 500
-
-    @IntRange(from = 0)
-    private var finderMultiCenterDuration = 500
+    private val finderConfig = IOSFinderConfig()
+    private var finderQuad = Quad.zero()
+    private val finderPath = Path()
 
     private var previewWidth: Int = 0
     private var previewHeight: Int = 0
 
-    private var normalQuad: Quad = Quad.zero()
-    private var finderQuad: Quad = Quad.zero()
-    private val finderPath = Path()
+    private var result = MultiCodeResult.empty
 
-    private val results = mutableListOf<CodeResult>()
-
-    private val isFound: Boolean
-        get() = results.isNotEmpty()
-    private val isFoundSingle: Boolean
-        get() = results.size == 1
-    private val isFoundMulti: Boolean
-        get() = results.size > 1
     private val isFinderLikeCircle: Boolean
-        get() = finderQuad.minSideLength <= normalQuad.minSideLength * finderIsCircleRadius * 2F
+        get() = finderQuad.minSideLength <= normalQuad.minSideLength * normalConfig.isCircleRadius * 2F
 
-    private val paint: Paint = Paint().apply {
-        isAntiAlias = true
-    }
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     private var singleTransformAnim: ValueAnimator? = null
     private var multiCenterAnim: ValueAnimator? = null
@@ -100,80 +54,6 @@ class IOSFinderView : View, ScanDecorator {
         requestLayout()
     }
 
-    constructor(context: Context) : this(context, null)
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    ) {
-        context.obtainStyledAttributes(attrs, R.styleable.IOSFinderView, defStyleAttr, 0).use {
-            finderNormalColor = it.getColor(
-                R.styleable.IOSFinderView_finderNormalColor,
-                finderNormalColor
-            )
-            finderFoundColor = it.getColor(
-                R.styleable.IOSFinderView_finderFoundColor,
-                finderFoundColor
-            )
-            finderCircleOuterColor = it.getColor(
-                R.styleable.IOSFinderView_finderCircleOuterColor,
-                finderCircleOuterColor
-            )
-            finderCircleInnerColor = it.getColor(
-                R.styleable.IOSFinderView_finderCircleInnerColor,
-                finderCircleInnerColor
-            )
-            finderInitSize = it.getFraction(
-                R.styleable.IOSFinderView_finderInitSize,
-                1, 1,
-                finderInitSize
-            )
-            finderNormalSize = it.getFraction(
-                R.styleable.IOSFinderView_finderNormalSize,
-                1, 1,
-                finderNormalSize
-            )
-            finderZoomSize = it.getFraction(
-                R.styleable.IOSFinderView_finderZoomSize,
-                1, 1,
-                finderZoomSize
-            )
-            finderStrokeWidth = it.getFraction(
-                R.styleable.IOSFinderView_finderStrokeWidth,
-                1, 1,
-                finderStrokeWidth
-            )
-            finderCornerRadius = it.getFraction(
-                R.styleable.IOSFinderView_finderCornerRadius,
-                1, 1,
-                finderCornerRadius
-            )
-            finderSideLength = it.getFraction(
-                R.styleable.IOSFinderView_finderSideLength,
-                1, 1,
-                finderSideLength
-            )
-            finderIsCircleRadius = it.getFraction(
-                R.styleable.IOSFinderView_finderIsCircleRadius,
-                1, 1,
-                finderIsCircleRadius
-            )
-            finderZoomDuration = it.getInteger(
-                R.styleable.IOSFinderView_finderZoomDuration,
-                finderZoomDuration
-            )
-            finderSingleTransformDuration = it.getInteger(
-                R.styleable.IOSFinderView_finderSingleTransformDuration,
-                finderSingleTransformDuration
-            )
-            finderMultiCenterDuration = it.getInteger(
-                R.styleable.IOSFinderView_finderMultiCenterDuration,
-                finderMultiCenterDuration
-            )
-        }
-    }
-
     override fun onCreate(scanner: CodeScanner) {
         this.scanner = scanner
         ratioLiveData = scanner.ratioLiveData
@@ -181,15 +61,16 @@ class IOSFinderView : View, ScanDecorator {
     }
 
     override fun onBind(camera: CameraProxy) {
-        results.clear()
+        result = MultiCodeResult.empty
+
         cancelAllAnim()
 
         val startAnimTask = {
             val from = if (finderQuad.isZero) {
                 normalQuad.copy().apply {
                     scaleByCenter(
-                        finderInitSize / finderNormalSize,
-                        finderInitSize / finderNormalSize
+                        normalConfig.initialSize / normalConfig.normalSize,
+                        normalConfig.initialSize / normalConfig.normalSize
                     )
                 }
             } else {
@@ -198,7 +79,7 @@ class IOSFinderView : View, ScanDecorator {
             val to = normalQuad.copy()
             singleTransformAnim = createSingleTransformAnim(from, to)
             singleTransformAnim?.doOnEnd {
-                if (!isFound) {
+                if (result.isEmpty) {
                     startZoom()
                 }
             }
@@ -210,16 +91,18 @@ class IOSFinderView : View, ScanDecorator {
         } ?: doOnPreDraw { startAnimTask() }
     }
 
-    override fun onFound(results: List<CodeResult>, bitmap: Bitmap?) {
-        this.results.clear()
-        this.results.addAll(results)
-        cancelAllAnim()
-        doOnPreDraw {
-            this.results.forEach {
-                it.mapFromPercent(previewWidth.toFloat(), previewHeight.toFloat())
-            }
+    override fun onFindSuccess(results: List<CodeResult>, bitmap: Bitmap?) {
+        doOnLayout {
+            result = MultiCodeResult(results.map {
+                it.copy().apply { mapFromPercent(previewWidth.toFloat(), previewHeight.toFloat()) }
+            })
+
             invalidate()
-            if (isFoundSingle) {
+
+            zoomAnim?.cancel()
+            zoomAnim = null
+
+            if (result.size == 1) {
                 foundSingle()
             } else {
                 foundMulti()
@@ -227,7 +110,39 @@ class IOSFinderView : View, ScanDecorator {
         }
     }
 
+    override fun onFindFailure(e: Throwable) {
+        if (result.isEmpty) {
+            return
+        }
+
+        doOnLayout {
+            result = MultiCodeResult.empty
+
+            val from = if (finderQuad.isZero) {
+                normalQuad.copy().apply {
+                    scaleByCenter(
+                        normalConfig.initialSize / normalConfig.normalSize,
+                        normalConfig.initialSize / normalConfig.normalSize
+                    )
+                }
+            } else {
+                finderQuad.copy()
+            }
+            val to = normalQuad.copy()
+
+            cancelAllAnim()
+
+            if (singleTransformAnim != null) {
+                singleTransformAnim!!.setObjectValues(from, to)
+            } else {
+                singleTransformAnim = createSingleTransformAnim(from, to)
+                singleTransformAnim?.start()
+            }
+        }
+    }
+
     override fun onUnbind() {
+        result = MultiCodeResult.empty
     }
 
     override fun onDestroy() {
@@ -277,17 +192,21 @@ class IOSFinderView : View, ScanDecorator {
                 (previewHeight - finderHeight) / 2F
             )
         }
-        quad.copy().apply { scaleByCenter(finderNormalSize, finderNormalSize) }.also {
-            if (normalQuad != it) {
-                normalQuad = it
+        quad.copy()
+            .apply { scaleByCenter(normalConfig.normalSize, normalConfig.normalSize) }
+            .also {
+                if (normalQuad != it) {
+                    normalQuad = it
+                }
             }
-        }
-        quad.copy().apply { scaleByCenter(finderInitSize, finderInitSize) }.also {
-            if (finderQuad.isZero) {
-                finderQuad = it
-                updateFinderPath()
+        quad.copy()
+            .apply { scaleByCenter(normalConfig.initialSize, normalConfig.initialSize) }
+            .also {
+                if (finderQuad.isZero) {
+                    finderQuad = it
+                    updateFinderPath()
+                }
             }
-        }
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -298,9 +217,9 @@ class IOSFinderView : View, ScanDecorator {
         canvas.save()
         canvas.translate(
             (width - previewWidth).toFloat() / 2F,
-            (height - previewHeight).toFloat() / 2F
+            (height - previewHeight).toFloat() / 2F,
         )
-        drawOutline(canvas)
+        // drawOutline(canvas)
         drawResults(canvas)
         canvas.restore()
     }
@@ -313,7 +232,7 @@ class IOSFinderView : View, ScanDecorator {
 
     private fun foundSingle() {
         val from = finderQuad.copy()
-        val to = results[0].quad.copy().apply {
+        val to = result.results.first().quad.copy().apply {
             if (isPoint) {
                 expand(0.5F)
             } else {
@@ -322,14 +241,18 @@ class IOSFinderView : View, ScanDecorator {
                 rect.expand(l / 2F)
                 val transform = PerspectiveTransform.quadrilateralToQuadrilateral(rect, this)
                 val expandRect = rect.apply {
-                    expand(finderStrokeWidth * l * 0.5F + finderCornerRadius * l * 0.35F)
+                    expand(normalConfig.strokeWidth * l * 0.5F + normalConfig.cornerRadius * l * 0.35F)
                 }
                 transform.transformQuad(expandRect)
                 set(expandRect)
             }
         }
-        singleTransformAnim = createSingleTransformAnim(from, to)
-        singleTransformAnim?.start()
+        if (singleTransformAnim != null) {
+            singleTransformAnim!!.setObjectValues(from, to)
+        } else {
+            singleTransformAnim = createSingleTransformAnim(from, to)
+            singleTransformAnim?.start()
+        }
     }
 
     private fun foundMulti() {
@@ -348,7 +271,7 @@ class IOSFinderView : View, ScanDecorator {
             strokeJoin = Paint.Join.ROUND
             strokeWidth = 3F
         }
-        results.forEach { result ->
+        result.results.forEach { result ->
             val quad = result.quad
             canvas.drawLine(quad.lb.x, quad.lb.y, quad.lt.x, quad.lt.y, paint)
             canvas.drawLine(quad.lt.x, quad.lt.y, quad.rt.x, quad.rt.y, paint)
@@ -359,27 +282,37 @@ class IOSFinderView : View, ScanDecorator {
 
     private fun drawResults(canvas: Canvas) {
         canvas.save()
-        if (isFound) {
-            if (isFoundSingle) {
+
+        when (result.size) {
+            0 -> {
+                drawFinder(canvas)
+            }
+
+            1 -> {
                 if (isFinderLikeCircle) {
                     val center = finderQuad.center
-                    drawPoint(canvas, center, finderIsCircleRadius * normalQuad.minSideLength)
+                    drawPoint(
+                        canvas,
+                        center,
+                        normalConfig.isCircleRadius * normalQuad.minSideLength
+                    )
                 } else {
                     drawFinder(canvas)
                 }
-            } else {
+            }
+
+            else -> {
                 val f = multiCenterAnim?.animatedFraction ?: 1F
-                results.forEach { result ->
+                result.results.forEach { result ->
                     drawPoint(
                         canvas,
                         result.center,
-                        f * finderIsCircleRadius * normalQuad.minSideLength
+                        f * normalConfig.isCircleRadius * normalQuad.minSideLength
                     )
                 }
             }
-        } else {
-            drawFinder(canvas)
         }
+
         canvas.restore()
     }
 
@@ -387,11 +320,11 @@ class IOSFinderView : View, ScanDecorator {
         canvas.drawPath(finderPath, paint.apply {
             strokeCap = Paint.Cap.ROUND
             strokeJoin = Paint.Join.ROUND
-            color = if (isFound) finderFoundColor else finderNormalColor
+            color = if (!result.isEmpty) normalConfig.foundColor else normalConfig.normalColor
             style = Paint.Style.STROKE
             strokeWidth = finderQuad.maxSideLength * kotlin.run {
-                val min = finderStrokeWidth * 3F
-                val max = finderStrokeWidth
+                val min = max(normalConfig.strokeWidth, 0.1F)
+                val max = normalConfig.strokeWidth
                 val f = (1F - finderQuad.maxSideLength / normalQuad.maxSideLength)
                     .coerceAtLeast(0F)
                 (min - max) * f + max
@@ -403,14 +336,14 @@ class IOSFinderView : View, ScanDecorator {
         canvas.drawCircle(point.x, point.y, r, paint.apply {
             strokeCap = Paint.Cap.ROUND
             strokeJoin = Paint.Join.ROUND
-            color = finderCircleOuterColor
+            color = normalConfig.circleOuterColor
             style = Paint.Style.FILL
             strokeWidth = 0F
         })
         canvas.drawCircle(point.x, point.y, r * 0.618F, paint.apply {
             strokeCap = Paint.Cap.ROUND
             strokeJoin = Paint.Join.ROUND
-            color = finderCircleInnerColor
+            color = normalConfig.circleInnerColor
             style = Paint.Style.FILL
             strokeWidth = 0F
         })
@@ -428,12 +361,15 @@ class IOSFinderView : View, ScanDecorator {
     private fun createZoomAnim(): ValueAnimator {
         val from = normalQuad.copy()
         val to = normalQuad.copy().apply {
-            scaleByCenter(finderZoomSize / finderNormalSize, finderZoomSize / finderNormalSize)
+            scaleByCenter(
+                normalConfig.zoomSize / normalConfig.normalSize,
+                normalConfig.zoomSize / normalConfig.normalSize
+            )
         }
         return ValueAnimator.ofObject(Quad.QuadEvaluator(), from, to).apply {
             repeatCount = ValueAnimator.INFINITE
             repeatMode = ValueAnimator.REVERSE
-            duration = finderZoomDuration.toLong()
+            duration = normalConfig.zoomDuration
             interpolator = AccelerateDecelerateInterpolator()
             addUpdateListener { animator ->
                 finderQuad = animator.animatedValue as Quad
@@ -447,7 +383,7 @@ class IOSFinderView : View, ScanDecorator {
 
     private fun createSingleTransformAnim(from: Quad, to: Quad): ValueAnimator {
         return ValueAnimator.ofObject(Quad.QuadEvaluator(), from, to).apply {
-            duration = finderSingleTransformDuration.toLong()
+            duration = normalConfig.singleTransformDuration
             interpolator = AccelerateDecelerateInterpolator()
             addUpdateListener { animator ->
                 finderQuad = animator.animatedValue as Quad
@@ -455,13 +391,16 @@ class IOSFinderView : View, ScanDecorator {
             }
             doOnEnd {
                 singleTransformAnim = null
+                if (result.isEmpty) {
+                    startZoom()
+                }
             }
         }
     }
 
     private fun createMultiCenterAnim(): ValueAnimator {
         return ValueAnimator.ofFloat(0F, 1F).apply {
-            duration = finderMultiCenterDuration.toLong()
+            duration = normalConfig.multiCenterDuration
             interpolator = AccelerateDecelerateInterpolator()
             addUpdateListener {
                 updateMultiCenter()
@@ -500,38 +439,58 @@ class IOSFinderView : View, ScanDecorator {
         }
         finderPath.addCorner(
             floatArrayOf(
-                from.lb.x + finderCornerRadius + finderSideLength, from.lb.y,
-                from.lb.x + finderCornerRadius, from.lb.y,
-                from.lb.x, from.lb.y,
-                from.lb.x, from.lb.y + finderCornerRadius,
-                from.lb.x, from.lb.y + finderCornerRadius + finderSideLength
+                from.lb.x + normalConfig.cornerRadius + normalConfig.sideLength,
+                from.lb.y,
+                from.lb.x + normalConfig.cornerRadius,
+                from.lb.y,
+                from.lb.x,
+                from.lb.y,
+                from.lb.x,
+                from.lb.y + normalConfig.cornerRadius,
+                from.lb.x,
+                from.lb.y + normalConfig.cornerRadius + normalConfig.sideLength
             )
         )
         finderPath.addCorner(
             floatArrayOf(
-                from.lt.x + finderCornerRadius + finderSideLength, from.lt.y,
-                from.lt.x + finderCornerRadius, from.lt.y,
-                from.lt.x, from.lt.y,
-                from.lt.x, from.lt.y - finderCornerRadius,
-                from.lt.x, from.lt.y - finderCornerRadius - finderSideLength
+                from.lt.x + normalConfig.cornerRadius + normalConfig.sideLength,
+                from.lt.y,
+                from.lt.x + normalConfig.cornerRadius,
+                from.lt.y,
+                from.lt.x,
+                from.lt.y,
+                from.lt.x,
+                from.lt.y - normalConfig.cornerRadius,
+                from.lt.x,
+                from.lt.y - normalConfig.cornerRadius - normalConfig.sideLength
             )
         )
         finderPath.addCorner(
             floatArrayOf(
-                from.rt.x - finderCornerRadius - finderSideLength, from.rt.y,
-                from.rt.x - finderCornerRadius, from.rt.y,
-                from.rt.x, from.rt.y,
-                from.rt.x, from.rt.y - finderCornerRadius,
-                from.rt.x, from.rt.y - finderCornerRadius - finderSideLength
+                from.rt.x - normalConfig.cornerRadius - normalConfig.sideLength,
+                from.rt.y,
+                from.rt.x - normalConfig.cornerRadius,
+                from.rt.y,
+                from.rt.x,
+                from.rt.y,
+                from.rt.x,
+                from.rt.y - normalConfig.cornerRadius,
+                from.rt.x,
+                from.rt.y - normalConfig.cornerRadius - normalConfig.sideLength
             )
         )
         finderPath.addCorner(
             floatArrayOf(
-                from.rb.x - finderCornerRadius - finderSideLength, from.rb.y,
-                from.rb.x - finderCornerRadius, from.rb.y,
-                from.rb.x, from.rb.y,
-                from.rb.x, from.rb.y + finderCornerRadius,
-                from.rb.x, from.rb.y + finderCornerRadius + finderSideLength
+                from.rb.x - normalConfig.cornerRadius - normalConfig.sideLength,
+                from.rb.y,
+                from.rb.x - normalConfig.cornerRadius,
+                from.rb.y,
+                from.rb.x,
+                from.rb.y,
+                from.rb.x,
+                from.rb.y + normalConfig.cornerRadius,
+                from.rb.x,
+                from.rb.y + normalConfig.cornerRadius + normalConfig.sideLength
             )
         )
     }

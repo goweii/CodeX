@@ -29,7 +29,7 @@ class ZXingEncodeProcessor(
     override fun process(
         input: String,
         onSuccess: (Bitmap) -> Unit,
-        onFailure: (Exception) -> Unit
+        onFailure: (Throwable) -> Unit
     ) {
         try {
             val bitMatrix = writer.encode(
@@ -40,7 +40,7 @@ class ZXingEncodeProcessor(
                 hints
             )
             onSuccess.invoke(bitMatrix.toBitmap())
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             onFailure.invoke(e)
         }
     }

@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import per.goweii.codex.CodeResult
+import per.goweii.codex.MultiCodeResult
 import per.goweii.codex.scanner.CameraProxy
 import per.goweii.codex.scanner.CodeScanner
 import per.goweii.codex.scanner.decorator.ScanDecorator
@@ -16,14 +17,25 @@ class VibrateDecorator(
 ) : ScanDecorator {
     private var vibrator: Vibrator? = null
 
+    private var lastResult = MultiCodeResult.empty
+
     override fun onCreate(scanner: CodeScanner) {
         vibrator = scanner.context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     }
 
     override fun onBind(camera: CameraProxy) {
+        lastResult = MultiCodeResult.empty
     }
 
-    override fun onFound(results: List<CodeResult>, bitmap: Bitmap?) {
+    override fun onFindSuccess(results: List<CodeResult>, bitmap: Bitmap?) {
+        val oldResult = lastResult
+        val newResult = MultiCodeResult(results)
+        lastResult = newResult
+
+        if (oldResult.sameTo(newResult)) {
+            return
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             vibrator?.vibrate(VibrationEffect.createOneShot(duration, amplitude))
         } else {
@@ -31,7 +43,11 @@ class VibrateDecorator(
         }
     }
 
+    override fun onFindFailure(e: Throwable) {
+    }
+
     override fun onUnbind() {
+        lastResult = MultiCodeResult.empty
     }
 
     override fun onDestroy() {

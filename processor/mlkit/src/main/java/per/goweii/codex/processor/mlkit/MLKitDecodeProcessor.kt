@@ -34,7 +34,7 @@ class MLKitDecodeProcessor(
     override fun process(
         input: Bitmap,
         onSuccess: (List<CodeResult>) -> Unit,
-        onFailure: (Exception) -> Unit
+        onFailure: (Throwable) -> Unit
     ) {
         if (input.isRecycled) {
             onFailure.invoke(CodeNotFoundException)
@@ -54,7 +54,7 @@ class MLKitDecodeProcessor(
                 } else {
                     onSuccess.invoke(results)
                 }
-            }.addOnFailureListener { e: Exception ->
+            }.addOnFailureListener { e ->
                 onFailure.invoke(e)
             }
     }

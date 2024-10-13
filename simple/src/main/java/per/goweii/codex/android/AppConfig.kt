@@ -6,6 +6,10 @@ import androidx.core.content.edit
 class AppConfig(context: Context) {
     private val prefs = context.getSharedPreferences("app_config", Context.MODE_PRIVATE)
 
+    var continuousScan: Boolean
+        get() = prefs.getBoolean("continuousScan", false)
+        set(value) = prefs.edit { putBoolean("continuousScan", value) }
+
     var scanFinder: String?
         get() = prefs.getString("scanFinder", null)
         set(value) = prefs.edit { putString("scanFinder", value) }

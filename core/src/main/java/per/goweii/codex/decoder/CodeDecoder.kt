@@ -9,7 +9,7 @@ class CodeDecoder(
     fun decode(
         bitmap: Bitmap,
         onSuccess: (List<CodeResult>) -> Unit,
-        onFailure: (Exception) -> Unit
+        onFailure: (Throwable) -> Unit
     ) {
         processor.process(bitmap, onSuccess, onFailure)
     }

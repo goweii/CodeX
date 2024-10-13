@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.media.AudioAttributes
 import android.media.SoundPool
 import per.goweii.codex.CodeResult
+import per.goweii.codex.MultiCodeResult
 import per.goweii.codex.scanner.CameraProxy
 import per.goweii.codex.scanner.CodeScanner
 import per.goweii.codex.scanner.decorator.ScanDecorator
@@ -13,6 +14,8 @@ class BeepDecorator(
 ) : ScanDecorator {
     private var soundPool: SoundPool? = null
     private var soundId: Int? = null
+
+    private var lastResult = MultiCodeResult.empty
 
     override fun onCreate(scanner: CodeScanner) {
         soundPool?.release()
@@ -28,15 +31,28 @@ class BeepDecorator(
     }
 
     override fun onBind(camera: CameraProxy) {
+        lastResult = MultiCodeResult.empty
     }
 
-    override fun onFound(results: List<CodeResult>, bitmap: Bitmap?) {
+    override fun onFindSuccess(results: List<CodeResult>, bitmap: Bitmap?) {
+        val oldResult = lastResult
+        val newResult = MultiCodeResult(results)
+        lastResult = newResult
+
+        if (oldResult.sameTo(newResult)) {
+            return
+        }
+
         val soundPool = soundPool ?: return
         val soundId = soundId ?: return
         soundPool.play(soundId, volume, volume, 0, 0, 1.0F)
     }
 
+    override fun onFindFailure(e: Throwable) {
+    }
+
     override fun onUnbind() {
+        lastResult = MultiCodeResult.empty
     }
 
     override fun onDestroy() {

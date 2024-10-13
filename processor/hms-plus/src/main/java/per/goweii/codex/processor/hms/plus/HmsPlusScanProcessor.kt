@@ -1,6 +1,6 @@
 package per.goweii.codex.processor.hms.plus
 
-import android.annotation.SuppressLint
+import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageProxy
 import androidx.core.util.forEach
 import com.huawei.hms.ml.scan.HmsScanAnalyzer
@@ -34,11 +34,11 @@ class HmsPlusScanProcessor(
         HmsScanAnalyzer(options)
     }
 
-    @SuppressLint("UnsafeExperimentalUsageError")
+    @ExperimentalGetImage
     override fun process(
         input: ImageProxy,
         onSuccess: (List<CodeResult>) -> Unit,
-        onFailure: (Exception) -> Unit
+        onFailure: (Throwable) -> Unit
     ) {
         val image = MLFrame.fromMediaImage(input.image, 0)
         val results = analyzer.analyseFrame(image)

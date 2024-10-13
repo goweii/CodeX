@@ -1,11 +1,13 @@
 package per.goweii.codex.android
 
 import android.Manifest
+import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -13,9 +15,13 @@ import android.provider.Settings
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.animation.doOnCancel
 import androidx.core.animation.doOnEnd
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import per.goweii.codex.CodeResult
+import per.goweii.codex.MultiCodeResult
 import per.goweii.codex.analyzer.luminosity.LuminosityAnalyzer
 import per.goweii.codex.android.databinding.ActivitySacnBinding
 import per.goweii.codex.android.databinding.IosFinderViewBinding
@@ -47,6 +53,8 @@ class ScanActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySacnBinding
     private lateinit var finderView: View
 
+    private var result = MultiCodeResult.empty
+
     private var startTime = 0L
 
     @Suppress("DEPRECATION")
@@ -66,9 +74,11 @@ class ScanActivity : AppCompatActivity() {
             IOSFinderView::class.java.name -> {
                 IosFinderViewBinding.inflate(layoutInflater).finderView
             }
+
             WeChatFinderView::class.java.name -> {
                 WechatFinderViewBinding.inflate(layoutInflater).finderView
             }
+
             else -> throw IllegalArgumentException()
         }
         binding.finderContainer.addView(
@@ -113,15 +123,15 @@ class ScanActivity : AppCompatActivity() {
                         CameraProxy.TORCH_ON -> {
                             binding.ivTorch.isSelected = true
                         }
+
                         CameraProxy.TORCH_OFF -> {
                             binding.ivTorch.isSelected = false
                         }
                     }
                 }
             }
-            onFound {
-                showResults(it)
-            }
+            onFound { r, b -> showResults(r, b) }
+            onException { hideResult() }
             bindToLifecycle(this@ScanActivity)
         }
         if (checkSelfPermission()) {
@@ -157,8 +167,14 @@ class ScanActivity : AppCompatActivity() {
         binding.tvTip.setOnClickListener(null)
     }
 
-    private fun showResults(results: List<CodeResult>) {
+    private fun showResults(results: List<CodeResult>, bitmap: Bitmap?) {
+        val lastResult = result
+        result = MultiCodeResult(results.map { it.copy() })
+
+        val startTime = this.startTime
         val foundTime = System.currentTimeMillis()
+        this.startTime = foundTime
+
         var centerY = 0F
         val sb = StringBuilder()
         sb.append("扫码用时:${foundTime - startTime}ms")
@@ -169,37 +185,52 @@ class ScanActivity : AppCompatActivity() {
             centerY += it.center.y
         }
         binding.tvResult.text = sb.toString()
+
+        if (!lastResult.isEmpty) {
+            return
+        }
+
         centerY /= results.size.toFloat()
         centerY *= binding.frozenView.height
         binding.flResult.visibility = View.INVISIBLE
         binding.flResult.post {
-            val topHeight = binding.frozenView.height - binding.svResult.height
-            var translationY = -(centerY - topHeight / 2F)
-            translationY = when {
-                translationY > 0 -> 0F
-                translationY < -binding.svResult.height -> -binding.svResult.height.toFloat()
-                else -> translationY
+            val animList = arrayListOf<Animator>()
+            if (bitmap != null) {
+                val topHeight = binding.frozenView.height - binding.svResult.height
+                var translationY = -(centerY - topHeight / 2F)
+                translationY = when {
+                    translationY > 0 -> 0F
+                    translationY < -binding.svResult.height -> -binding.svResult.height.toFloat()
+                    else -> translationY
+                }
+
+                animList.add(
+                    ObjectAnimator.ofFloat(
+                        binding.frozenView,
+                        "translationY",
+                        binding.frozenView.translationY,
+                        translationY
+                    )
+                )
+                animList.add(
+                    ObjectAnimator.ofFloat(
+                        finderView,
+                        "translationY",
+                        finderView.translationY,
+                        translationY
+                    )
+                )
             }
-            val frozenViewAnim = ObjectAnimator.ofFloat(
-                binding.frozenView,
-                "translationY",
-                binding.frozenView.translationY,
-                translationY
-            )
-            val finderViewAnim = ObjectAnimator.ofFloat(
-                finderView,
-                "translationY",
-                finderView.translationY,
-                translationY
-            )
-            val cardViewAnim = ObjectAnimator.ofFloat(
-                binding.svResult,
-                "translationY",
-                binding.svResult.height.toFloat(),
-                0F
+            animList.add(
+                ObjectAnimator.ofFloat(
+                    binding.svResult,
+                    "translationY",
+                    binding.svResult.height.toFloat(),
+                    0F
+                )
             )
             AnimatorSet().apply {
-                playTogether(frozenViewAnim, finderViewAnim, cardViewAnim)
+                playTogether(animList)
             }.start()
             binding.flResult.visibility = View.VISIBLE
         }
@@ -209,6 +240,12 @@ class ScanActivity : AppCompatActivity() {
     }
 
     private fun hideResult() {
+        if (result.isEmpty) {
+            return
+        }
+
+        result = MultiCodeResult.empty
+
         binding.flResult.setOnClickListener(null)
         val frozenViewAnim = ObjectAnimator.ofFloat(
             binding.frozenView,
@@ -231,7 +268,9 @@ class ScanActivity : AppCompatActivity() {
         AnimatorSet().apply {
             playTogether(frozenViewAnim, finderViewAnim, cardViewAnim)
             doOnEnd {
-                binding.flResult.visibility = View.GONE
+                if (result.isEmpty) {
+                    binding.flResult.visibility = View.GONE
+                }
             }
         }.start()
         startScan()

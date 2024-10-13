@@ -12,9 +12,11 @@ import android.view.animation.LinearInterpolator
 import androidx.core.animation.doOnEnd
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.view.doOnLayout
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import per.goweii.codex.CodeResult
+import per.goweii.codex.MultiCodeResult
 import per.goweii.codex.scanner.CameraProxy
 import per.goweii.codex.scanner.CodeScanner
 import per.goweii.codex.scanner.decorator.ScanDecorator
@@ -33,12 +35,7 @@ class WeChatFinderView : View, ScanDecorator {
     private var previewWidth: Int = 0
     private var previewHeight: Int = 0
 
-    private val results = mutableListOf<CodeResult>()
-    private val isFound: Boolean
-        get() = results.isNotEmpty()
-    private val paint: Paint = Paint().apply {
-        isAntiAlias = true
-    }
+    private val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     private var animator: ValueAnimator? = null
     private var finderMoveFaction = 0F
@@ -51,6 +48,8 @@ class WeChatFinderView : View, ScanDecorator {
     private val ratioObserver: Observer<CodeScanner.Ratio> = Observer {
         requestLayout()
     }
+
+    private var result = MultiCodeResult.empty
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -107,27 +106,39 @@ class WeChatFinderView : View, ScanDecorator {
     }
 
     override fun onBind(camera: CameraProxy) {
-        results.clear()
-        animator?.cancel()
-        post {
+        doOnLayout {
+            result = MultiCodeResult.empty
+            animator?.cancel()
             animator = createFinderAnim()
             animator?.start()
         }
     }
 
-    override fun onFound(results: List<CodeResult>, bitmap: Bitmap?) {
-        animator?.cancel()
-        this.results.clear()
-        this.results.addAll(results)
-        post {
-            this.results.forEach {
-                it.mapFromPercent(previewWidth.toFloat(), previewHeight.toFloat())
-            }
+    override fun onFindSuccess(results: List<CodeResult>, bitmap: Bitmap?) {
+        doOnLayout {
+            result = MultiCodeResult(results.map {
+                it.copy().apply { mapFromPercent(previewWidth.toFloat(), previewHeight.toFloat()) }
+            })
+            animator?.cancel()
             invalidate()
         }
     }
 
+    override fun onFindFailure(e: Throwable) {
+        if (result.isEmpty) {
+            return
+        }
+
+        doOnLayout {
+            result = MultiCodeResult.empty
+            animator?.cancel()
+            animator = createFinderAnim()
+            animator?.start()
+        }
+    }
+
     override fun onUnbind() {
+        result = MultiCodeResult.empty
     }
 
     override fun onDestroy() {
@@ -180,7 +191,7 @@ class WeChatFinderView : View, ScanDecorator {
         if (width <= 0 && height <= 0) {
             return
         }
-        if (isFound) {
+        if (result.isNotEmpty) {
             drawResults(canvas)
         } else {
             drawFinder(canvas)
@@ -228,7 +239,7 @@ class WeChatFinderView : View, ScanDecorator {
             style = Paint.Style.FILL
             strokeWidth = 0F
         }
-        results.forEach { result ->
+        result.results.forEach { result ->
             val point = result.center
             paint.color = finderResultPointOuterColor
             canvas.drawCircle(point.x, point.y, finderResultPointRadius, paint)
@@ -236,10 +247,6 @@ class WeChatFinderView : View, ScanDecorator {
             canvas.drawCircle(point.x, point.y, finderResultPointRadius * 0.618F, paint)
         }
         canvas.restore()
-    }
-
-    private fun updateFinder() {
-        invalidate()
     }
 
     private fun createFinderAnim(): ValueAnimator {
@@ -250,7 +257,7 @@ class WeChatFinderView : View, ScanDecorator {
             interpolator = LinearInterpolator()
             addUpdateListener { animator ->
                 finderMoveFaction = animator.animatedValue as Float
-                updateFinder()
+                invalidate()
             }
             doOnEnd { animator = null }
         }

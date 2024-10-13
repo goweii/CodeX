@@ -1,6 +1,7 @@
 package per.goweii.codex.processor.mlkit
 
 import android.annotation.SuppressLint
+import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageProxy
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -32,11 +33,11 @@ class MLKitScanProcessor(
         BarcodeScanning.getClient(options)
     }
 
-    @SuppressLint("UnsafeExperimentalUsageError")
+    @ExperimentalGetImage
     override fun process(
         input: ImageProxy,
         onSuccess: (List<CodeResult>) -> Unit,
-        onFailure: (Exception) -> Unit
+        onFailure: (Throwable) -> Unit
     ) {
         val image = input.image ?: run {
             onFailure.invoke(CodeNotFoundException)

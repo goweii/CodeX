@@ -40,8 +40,11 @@ class AutoZoomDecorator(
         }, zoomDelay)
     }
 
-    override fun onFound(results: List<CodeResult>, bitmap: Bitmap?) {
+    override fun onFindSuccess(results: List<CodeResult>, bitmap: Bitmap?) {
         handler?.removeCallbacksAndMessages(null)
+    }
+
+    override fun onFindFailure(e: Throwable) {
     }
 
     override fun onUnbind() {

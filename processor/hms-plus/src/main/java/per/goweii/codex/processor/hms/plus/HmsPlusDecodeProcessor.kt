@@ -36,7 +36,7 @@ class HmsPlusDecodeProcessor(
     override fun process(
         input: Bitmap,
         onSuccess: (List<CodeResult>) -> Unit,
-        onFailure: (Exception) -> Unit
+        onFailure: (Throwable) -> Unit
     ) {
         val image = MLFrame.fromBitmap(input)
         val results = analyzer.analyseFrame(image)

@@ -61,9 +61,15 @@ internal class DecoratorSet {
         }
     }
 
-    internal fun onFound(results: List<CodeResult>, bitmap: Bitmap?) {
+    internal fun onFindSuccess(results: List<CodeResult>, bitmap: Bitmap?) {
         decorators.forEach {
-            it.onFound(results, bitmap)
+            it.onFindSuccess(results, bitmap)
+        }
+    }
+
+    internal fun onFindFailure(e: Throwable) {
+        decorators.forEach {
+            it.onFindFailure(e)
         }
     }
 

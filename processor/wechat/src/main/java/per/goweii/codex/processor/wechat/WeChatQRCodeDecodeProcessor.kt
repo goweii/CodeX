@@ -16,7 +16,7 @@ class WeChatQRCodeDecodeProcessor(context: Context) : DecodeProcessor<Bitmap> {
     override fun process(
         input: Bitmap,
         onSuccess: (List<CodeResult>) -> Unit,
-        onFailure: (Exception) -> Unit
+        onFailure: (Throwable) -> Unit
     ) {
         try {
             val points = arrayListOf<Mat>()
@@ -42,7 +42,7 @@ class WeChatQRCodeDecodeProcessor(context: Context) : DecodeProcessor<Bitmap> {
                 codeResults.add(codeResult)
             }
             onSuccess.invoke(codeResults)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             onFailure.invoke(e)
         }
     }
